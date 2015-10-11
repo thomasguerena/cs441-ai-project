@@ -1,1 +1,2 @@
-# cs441-ai-project
+# CS441 Computer Science Course Project
+A naive simulation of bacteria cells evolving to resist antibiotics via mutation and horizontal gene transfer. This artificial intelligence is an example of genetic aglorithms.
