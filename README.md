@@ -10,9 +10,11 @@ Horizontal gene transfer (HGT) leads to resistant bacteria cells much faster tha
 #### Design Requirements
 There are a number of AI algorithms used in this project. Bacteria cells are represented as cellular automata. The actions of those automata result in a genetic algorithm to defeat the simulation’s antibiotic. More accurately, the automata are discovering a weakness in the antibiotic and settling into it. This is more or less the simple hill-climbing problem.
 The second layer of this problem, horizontal gene transfer, will be parameterized by an instruction set, over which an AI will search for advantageous selection methods. This is similar to Melanie Mitchell’s approach to finding intelligent instruction sets for Robby Robot.
+
 Source: http://web.cecs.pdx.edu/~york/cs441/Readings/MMevca.pdf
 #### Implementation Plan
 Currently, I’ve built a prototype using Javascript to visualize the evolution process. This prototype, so far, includes everything leading up to intelligent horizontal gene transfer. Meaning, the second AI has not yet been built. I am using this to refine my strategies and fine tune the math behind the evolution and selection. Once I feel confident with my solution, I will port the prototype to Python, leaving out the code to render a visual representation. If time allows, I may add this back in using the TkInter Python library.
+
 Source: https://wiki.python.org/moin/TkInter
 
 The rest of the project will be built using Python on Mac and Linux machines. So far, no code has been borrowed, and intend to continue building the project from scratch for the sake of education.
@@ -21,6 +23,7 @@ The rest of the project will be built using Python on Mac and Linux machines. So
 - **Bacteria Cell DNA**: Three-digit hex codes (0-4095), allowing for color visual representation.
 - **Antibiotic**: A fitness function applied to every cell, every generation. My max population is relatively small, which indicates my simulation is representative of a small environment. In such a small environment, the antibiotic would fully permeate the space. Therefore, there’s no reason to represent it in the matrix.
 - **HGT Instruction Set**: *UNKNOWN*
+
 #### Test Plan
 My prototype has already begun testing my cellular automata and evolution processes. This testing will continue as I fine tune the simulation parameters such as: step-values (mutation variance), mutation rate, starting colony size, rate of annealing, and more.
 
