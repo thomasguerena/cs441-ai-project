@@ -48,6 +48,6 @@ This data will be stored per test run, in a CSV file named using the test number
 | Selection AI, test |||| #### |
 | Full Test Runs |||| #### | #### |
 | Data Analysis |||||| #### | #### |
-| Final Report ||||||| #### |
+| Final Report, Presentation ||||||| #### |
 ### Anticipated Obstacles
 Time. I’m predicting that the mate-selection AI will take longer to build than the simulation, and take a significant amount of time to discover viable instruction sets. Given the magnitude of its search space, I may not be able to achieve my larger goal without changing my cell representation. Luckily, AI feels more like fun than chore and I’m hoping my enthusiasm for the subject will trump the amount of work left to be done.
