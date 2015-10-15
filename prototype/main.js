@@ -75,7 +75,7 @@
 
 	Simulation.prototype.update = function () {
 		var that = this;
-		var cullset = []; // cells to kill
+		var killset = []; // cells to kill
 		var cloneset = []; // cells to clone
 
 		// Next generation
@@ -95,14 +95,14 @@
 				cell.fitness = that.antibiotic.chanceOfSurvival(cell);
 			}
 			if (cell.survives() === false) {
-				cullset.push(cell);
+				killset.push(cell);
 			} else {
 				cloneset.push(cell);
 			}
 		});
 
-		// 4. Cull
-		cullset.forEach(function (cell) {
+		// 4. Cell Culling
+		killset.forEach(function (cell) {
 			that.bacteria.kill(cell);
 		});
 

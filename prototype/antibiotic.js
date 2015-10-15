@@ -4,7 +4,7 @@
 	window.Antibiotic = function () {
 		// TODO - randomaly assign a new center
 		this.center = 2048; // ~ middle of 0 and 4906;
-		this.leniency = 128;
+		this.leniency = 64;
 	};
 
 	Antibiotic.prototype.chanceOfSurvival = function(cell) {

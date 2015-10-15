@@ -37,10 +37,9 @@
 	};
 
 	Bacteria.prototype.mutate = function () {
+		// Anneal number of mutant cells
 		var anValue = 10 + Math.floor(generation/10);
 		var mutants = Math.floor(Math.random()*(this.cells.length)/anValue);
-		// console.log('annealing = ' + anValue); //rmv
-		// console.log('no mutants = ' + mutants); //rmv
 		for (var i = 0; i < mutants; ++i) {
 			var mutant = Math.floor(Math.random()*this.cells.length);
 			this.cells[mutant].mutate();
@@ -111,8 +110,9 @@
 	};
 
 	Cell.prototype.shiftGene = function (index) {
-		// TODO - make this a random value that anneals
-		var variance = 3; // co-prime to 16
+		// Anneal mutation step
+		// TODO - should min be 1?
+		var variance = Math.max(0, 15 - Math.floor(generation/10));
 		var c = hexToStr((strToHex(this.dna.charAt(index)) + variance)%16);
 		this.dna = this.dna.substr(0, index) + c + this.dna.substr(index + 1);
 	};
