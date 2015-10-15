@@ -5,14 +5,15 @@
 	window.Bacteria = function () {
 		this.cells = [];
 		this.matrix = new Matrix(80, 80, this.cells);
+		this.numCellsAllTime = 0;
 
-		// DEBUGGING
-		window.matrix = this.matrix; //rmv
-		window.cells = this.cells; //rmv
+		// DEBUGGING - remove
+		window.matrix = this.matrix;
+		window.cells = this.cells;
 	};
 
 	Bacteria.prototype.addCell = function (x, y, dna) {
-		var cid = this.cells.length + 1;
+		var cid = ++this.numCellsAllTime;
 		var cx = x || Math.floor(Math.random()*20); // TODO
 		var cy = y || Math.floor(Math.random()*20); // TODO - avoid collisions
 

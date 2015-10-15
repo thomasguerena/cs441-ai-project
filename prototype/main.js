@@ -22,13 +22,8 @@
 		this.loop(500);
 	};
 
-	Simulation.prototype.pause = function () {
+	Simulation.prototype.stop = function () {
 		this.PAUSED = true;
-	};
-
-	Simulation.prototype.reset = function () {
-		this.PAUSED = true;
-		// TODO - wipe state
 	};
 
 	Simulation.prototype.report = function () {
@@ -69,7 +64,7 @@
 		this.generation += 1;
 
 		// 1. Cell Mutation (every N generations)
-		if (this.generation%10 === 0) {
+		if (this.generation%100 === 0) {
 			this.bacteria.cells.forEach(function (cell) {
 				cell.mutate();
 			});
@@ -94,7 +89,7 @@
 			that.bacteria.replicateCell(cell);
 		});
 
-		this.report();
+		// this.report();
 		this.bacteria.matrix.render();
 	};
 
