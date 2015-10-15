@@ -58,15 +58,44 @@
 		}
 	}
 
-	// @param {number} minGenDuration is the least length of time, in
-	// milliseconds, that elaspes per generation.
-	Simulation.prototype.loop = function (minGenDuration) {
-	 	// TODO - ignore animation speed for now
-		if (this.PAUSED === true) return;
-		this.update();
-		if (this.bacteria.cells.length > 0) {
+	Simulation.prototype.checkSuccess = function () {
+		var targetDNA = this.antibiotic.center;
+		for (var i = 1; i < this.bacteria.cells.length; ++i) {
+			var dna = this.bacteria.cells[i].dna;
+			if (parseInt(dna, 16) !== targetDNA) {
+				return false;
+			}
+		}
+		return true;
+	};
+
+	Simulation.prototype.checkFailure = function () {
+		return this.bacteria.cells.length === 0;
+	};
+
+	Simulation.prototype.loop = function () {
+
+		if (this.PAUSED === false) {
+			this.update();
+		} else {
+			return;
+		}
+
+		// A: Have the cells overcome the antibiotic?
+		if (this.bacteria.cells.length === 6400
+		 && this.checkSuccess() === true) {
+			console.log('\nBacteria are immune after ' + generation + ' generations.');
+		}
+
+		// B: Have the cells all died?
+		else if (this.checkFailure() === true) {
+			console.log('\nBacteria are dead after ' + generation + ' generations.');
+		}
+
+		// C: Cells are still evolving...
+		else {
 			setTimeout(function (that) {
-				that.loop(minGenDuration);
+				that.loop();
 			}, 50, this);
 		}
 	};
