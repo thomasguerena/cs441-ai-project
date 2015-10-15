@@ -52,7 +52,7 @@
 		var a = knuthShuffle([0,1,2,3,4,5,6,7]); // action list
 		while (a.length > 0) {
 			var c = a.shift(); // current action
-			var ax, ay; // actioned xy-coordinates
+			var ax, ay; // "actioned" xy-coordinates
 			switch (c) {
 				case 0: ax = x; ay = y+1; break;
 				case 1: ax = x; ay = y-1; break;
@@ -65,13 +65,7 @@
 			}
 
 			ax = ((ax%l1)+l1)%l1; // This provides a true modulus,
-			ay = ((ay%l2)+l2)%l2; // ..which handles negative vals.
-
-			// ax = ax < 0 ? 0 : ax;
-			// ax = ax >= this.m.length ? this.m.length - 1 : ax;
-			// ay = ay < 0 ? 0 : ay;
-			// ay = ay >= this.m[0].length ? this.m[0].length - 1 : ay;
-
+			ay = ((ay%l2)+l2)%l2; // ..which handles negative values.
 			if (this.m[ax][ay] === 0) return { x: ax, y: ay };
 		}
 		return { x: -1, y: -1};

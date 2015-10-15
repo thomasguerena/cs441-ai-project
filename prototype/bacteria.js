@@ -12,17 +12,20 @@
 		window.cells = this.cells;
 	};
 
-	Bacteria.prototype.addCell = function (x, y, dna) {
+	Bacteria.prototype.addCell = function (x, y, dna, fitness) {
 		var cid = ++this.numCellsAllTime;
 		var cx = x || Math.floor(Math.random()*20); // TODO
 		var cy = y || Math.floor(Math.random()*20); // TODO - avoid collisions
 
-		this.cells.push(new Cell(cid, cx, cy, dna));
-		this.matrix.addCell(this.cells[this.cells.length - 1]);
+		// Duplicate protection
+		if (this.matrix.m[cx][cy] === 0) {
+			this.cells.push(new Cell(cid, cx, cy, dna, fitness));
+			this.matrix.addCell(this.cells[this.cells.length - 1]);
+		}
 	};
 
 	Bacteria.prototype.populate = function () {
-		for (var i = 0; i < 5; ++i) {
+		for (var i = 0; i < 20; ++i) {
 			this.addCell();
 		}
 	};
@@ -30,7 +33,18 @@
 	Bacteria.prototype.replicateCell = function (cell) {
 		var coords = this.matrix.getEmptyAdjacent(cell);
 		if (coords.x < 0 || coords.y < 0) return;
-		this.addCell(coords.x, coords.y, cell.dna);
+		this.addCell(coords.x, coords.y, cell.dna, cell.fitness);
+	};
+
+	Bacteria.prototype.mutate = function () {
+		var anValue = 10 + Math.floor(generation/10);
+		var mutants = Math.floor(Math.random()*(this.cells.length)/anValue);
+		// console.log('annealing = ' + anValue); //rmv
+		// console.log('no mutants = ' + mutants); //rmv
+		for (var i = 0; i < mutants; ++i) {
+			var mutant = Math.floor(Math.random()*this.cells.length);
+			this.cells[mutant].mutate();
+		}
 	};
 
 	Bacteria.prototype.horizontalGeneTransfer = function () {
@@ -65,16 +79,18 @@
 		for (var i = 0; i < this.cells.length; ++i) {
 			if (this.cells[i].cid === cell.cid) {
 				this.cells.splice(i, 1);
+				return;
 			}
 		}
 	};
 
 
 	/*-- Cell --*/
-	var Cell = function (cid, x, y, dna) {
+	var Cell = function (cid, x, y, dna, fitness) {
 		this.cid = cid;
 		this.x = x || 0;
 		this.y = y || 0;
+		this.fitness = fitness || 1;
 		this.dna = dna || (function() {
 			var code = '';
 			while (code.length < 3) {
@@ -101,7 +117,7 @@
 		this.dna = this.dna.substr(0, index) + c + this.dna.substr(index + 1);
 	};
 
-	Cell.prototype.survives = function (probability) {
-		return Math.random() <= probability;
+	Cell.prototype.survives = function () {
+		return Math.random() <= this.fitness;
 	};
 })();
