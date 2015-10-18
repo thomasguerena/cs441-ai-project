@@ -13,19 +13,19 @@
 		for (var i = 0; i < n; ++i) {
 			this.m.push([]);
 			for (var j = 0; j < m; ++j) {
-				this.m[i].push(0);
+				this.m[i].push(null);
 			}
 		}
 	};
 
 	Matrix.prototype.addCell = function (cell) {
 		if (!this.m[cell.x][cell.y]) {
-			this.m[cell.x][cell.y] = cell.dna;
+			this.m[cell.x][cell.y] = cell;
 		}
 	};
 
 	Matrix.prototype.removeCell = function (cell) {
-		this.m[cell.x][cell.y] = 0;
+		this.m[cell.x][cell.y] = null;
 	};
 
 	// @description Return an array of 0 to 8 neighboring bacteria cells.
@@ -66,7 +66,7 @@
 
 			ax = ((ax%l1)+l1)%l1; // This provides a true modulus,
 			ay = ((ay%l2)+l2)%l2; // ..which handles negative values.
-			if (this.m[ax][ay] === 0) return { x: ax, y: ay };
+			if (this.m[ax][ay] === null) return { x: ax, y: ay };
 		}
 		return { x: -1, y: -1};
 	}

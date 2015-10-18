@@ -10,7 +10,7 @@
 		window.generation = 0; // current generation - global
 		this.criticalGeneration = 10; // when to introduct antibiotic
 
-		this.bacteria.populate();
+		this.bacteria.populate(20);
 		this.bacteria.matrix.render();
 		this.report();
 	};
@@ -33,7 +33,7 @@
 			var count = 0;
 			for (var i = 0; i < that.bacteria.matrix.m.length; ++i) {
 				for (var j = 0; j < that.bacteria.matrix.m[i].length; ++j) {
-					if (that.bacteria.matrix.m[i][j] !== 0) ++count;
+					if (that.bacteria.matrix.m[i][j] !== null) ++count;
 				}
 			}
 			return count;

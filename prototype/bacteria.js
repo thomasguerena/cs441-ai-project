@@ -18,14 +18,14 @@
 		var cy = y || Math.floor(Math.random()*20); // TODO - avoid collisions
 
 		// Duplicate protection
-		if (this.matrix.m[cx][cy] === 0) {
+		if (this.matrix.m[cx][cy] === null) {
 			this.cells.push(new Cell(cid, cx, cy, dna, fitness));
 			this.matrix.addCell(this.cells[this.cells.length - 1]);
 		}
 	};
 
-	Bacteria.prototype.populate = function () {
-		for (var i = 0; i < 20; ++i) {
+	Bacteria.prototype.populate = function (n) {
+		for (var i = 0; i < n; ++i) {
 			this.addCell();
 		}
 	};
