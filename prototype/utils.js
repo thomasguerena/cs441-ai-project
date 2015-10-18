@@ -12,7 +12,7 @@
 	// Convert hex string to hex number
 	window.strToHex = function (str) {
 		return parseInt(str, 16);
-	}
+	};
 
 	// Shuffle array using Knuth Shuffle method
 	window.knuthShuffle = function (l) {
@@ -25,5 +25,21 @@
 			l[ri] = t;
 		}
 		return l;
-	}
+	};
+
+	// Reduce hex color string from 6-digit to 3
+	window.reduceHex = function (str) {
+		str = str[0] == '#' ? str.slice(1, str.length) : str;
+		return str[0] + str[2] + str[4];
+	};
+
+	// Expand hex color string from 3-digit to 6
+	window.expandHex = function (str) {
+		var result = '#';
+		str = str[0] == '#' ? str.slice(1, str.length) : str;
+		for (var i = 0; i < str.length; ++i) {
+			result += str[i] + str[i];
+		}
+		return result;
+	};
 })();

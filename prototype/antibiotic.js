@@ -6,6 +6,11 @@
 		this.leniency = 64; // uneffective range
 	};
 
+    // Reposition the antibiotic's weakness
+    Antibiotic.prototype.set = function (center) {
+        this.center = center;
+    };
+
 	Antibiotic.prototype.chanceOfSurvival = function(cell) {
 		var c = this.center;
     	var l = Math.max(this.leniency - 2*Math.floor(generation/10), 0);

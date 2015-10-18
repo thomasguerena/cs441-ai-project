@@ -144,5 +144,12 @@
 		this.bacteria.matrix.render();
 	};
 
+	Simulation.prototype.changeAntibiotic = function() {
+		var colorpicker = document.getElementById('colorpicker');
+		var reduced = reduceHex(colorpicker.value);
+		colorpicker.value = expandHex(reduced);
+		this.antibiotic.set(strToHex(reduced));
+	};
+
 	window.sim = new Simulation();
 })();
