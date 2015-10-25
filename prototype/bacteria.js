@@ -14,8 +14,8 @@
 
 	Bacteria.prototype.addCell = function (x, y, dna, fitness) {
 		var cid = ++this.numCellsAllTime;
-		var cx = x || Math.floor(Math.random()*20); // TODO
-		var cy = y || Math.floor(Math.random()*20); // TODO - avoid collisions
+		var cx = x || this.matrix.boundX(Math.floor(Math.random()*100)); // TODO
+		var cy = y || this.matrix.boundY(Math.floor(Math.random()*100)); // TODO - avoid collisions
 
 		// Duplicate protection
 		if (this.matrix.m[cx][cy] === null) {
@@ -46,31 +46,18 @@
 		}
 	};
 
-	Bacteria.prototype.horizontalGeneTransfer = function () {
-		var remaining = this.cells.slice(); // create copy
-		var pairs = [];
+	Bacteria.prototype.horizontalGeneTransfer = function (remaining) {
+		remaining = remaining || this.cells.slice(); // create copy
+		var cell = remaining.shift(); // cannot mate with self
+		var neighbors = this.matrix.getAdjacent(cell); // get potential mates
+		neighbors = removeCellsFromList(remaining, neighbors); // only unmated cells
+		var selected = cell.mate(neighbors, remaining);  // get chosen mate
+		selected = selected || { cid: -1 }; // provide dummy cell if no mate was selected
+		remaining = removeCellsFromList(selected, remaining); // selected cells can't mate again
 
-		// Pair up adjacent cells.
-		while (remaining.length > 1) {
-			var cell = remaining.shift();
-			var adj = this.matrix.getAdjacent(cell);
-			// Intersect adjacent and remaining cells.
-			adj = adj.filter(function (c1) {
-				for (var c2 in remaining) {
-					if (c1.cid === c2.cid) {
-						return true;
-					}
-				}
-				return false;
-			});
-			if (adj.length > 0) {
-				pairs.push([cell, adj.shift()]);
-			}
+		if (remaining.length > 1) {
+			this.horizontalGeneTransfer(remaining);
 		}
-
-		// Swap some of their DNA.
-		// TODO
-		console.log(pairs);
 	};
 
 	Bacteria.prototype.kill = function (cell) {
@@ -119,5 +106,24 @@
 
 	Cell.prototype.survives = function () {
 		return Math.random() <= this.fitness;
+	};
+
+	Cell.prototype.mate = function (potentialMates) {
+		if (potentialMates.length === 0) return null;
+
+		// TODO - add modular method for selecting mate
+
+		var selected = { fitness: 0 }; // dummy cell
+		var dna1, dna2;
+		for (var i = 0; i < potentialMates.length; ++i) {
+			if (potentialMates[i].fitness > selected.fitness) {
+				selected = potentialMates[i];
+			}
+		}
+
+		dna1 = this.dna[0] + selected.dna[1] + selected.dna[2];
+		dna2 = selected.dna[0] + this.dna[1] + this.dna[2];
+		this.dna = dna1;
+		selected.dna = dna2;
 	};
 })();

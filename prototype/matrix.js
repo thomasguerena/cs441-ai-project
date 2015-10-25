@@ -18,6 +18,14 @@
 		}
 	};
 
+	Matrix.prototype.boundX = function (x) {
+		return ((x%this.m.length)+this.m.length)%this.m.length;
+	};
+
+	Matrix.prototype.boundY = function (y) {
+		return ((y%this.m[0].length)+this.m[0].length)%this.m[0].length;
+	};
+
 	Matrix.prototype.addCell = function (cell) {
 		if (!this.m[cell.x][cell.y]) {
 			this.m[cell.x][cell.y] = cell;
@@ -33,8 +41,10 @@
 		var neighbors = [];
 		for (var i = -1; i < 2; ++i) {
 			for (var j = -1; j < 2; ++j) {
-				if (i !== 0 && j !== 0 && this.m[cell.x+i][cell.y+j] !== 0) {
-					neighbors.push(this.m[cell.x+i][cell.y+j]);
+				var x = this.boundX(cell.x + i);
+				var y = this.boundY(cell.y + j);
+				if (i !== 0 && j !== 0 && this.m[x][y] !== null) {
+					neighbors.push(this.m[x][y]);
 				}
 			}
 		}

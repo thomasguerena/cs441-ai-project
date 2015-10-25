@@ -42,4 +42,16 @@
 		}
 		return result;
 	};
+
+	window.removeCellsFromList = function (cells, list) {
+		if (!(cells instanceof Array)) cells = [cells];
+
+		for (var i = 0; i < cells.length; ++i) {
+			list = list.filter(function (toMatch) {
+				if (toMatch.cid === cells[i].cid) return false;
+				else return true;
+			});
+		}
+		return list;
+	};
 })();
