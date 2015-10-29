@@ -5,7 +5,7 @@
 
 	var Simulation = function () {
 		this.PAUSED = false;
-		this.environment = new Environment(20, 20);
+		this.environment = new Environment(16, 16);
 		this.canvas = document.querySelector('canvas');
 		this.ctx = this.canvas.getContext('2d');
 
@@ -13,6 +13,7 @@
 		this.criticalGeneration = 10; // when to introduce antibiotic
 
 		this.environment.populate();
+		this.render();
 		this.report();
 	};
 
@@ -29,29 +30,33 @@
 
 	Simulation.prototype.report = function () {
 		var that = this;
-		var bacteriaCount = this.environment.bacteriaList.length;
-		var antibioticCount = this.environment.antibioticList.length;
+		var bacteriaCount = 0;
+		var antibioticCount = 0;
+		for (var i = 0; i < this.environment.n; ++i) {
+			if (this.environment.bacteriaList[i] != null) ++bacteriaCount;
+			if (this.environment.antibioticList[i] != null) ++antibioticCount;
+		}
 		console.log('\n\nGeneration ' + generation + '\n');
 		console.log('Bacteria count: ' + bacteriaCount);
 		console.log('Antibiotic count: ' + antibioticCount);
 	}
 
 	Simulation.prototype.render = function () {
-		var tilesize = 50;
+		var tilesize = Math.floor(this.canvas.width/this.environment.n);
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		for (var i = 0; i < this.environment.n; ++i) {
 			for (var j = 0; j < this.environment.m; ++j) {
 				var cx = tilesize*i;
 				var cy = tilesize*j;
 				if (this.environment.bacteriaMatrix[i][j] >= 0
-				 && this.environment.antibioticMatrix[i][j]) {
-				 	that.ctx.fillStyle = '#F28705';
+				 && this.environment.antibioticMatrix[i][j] >= 0) {
+				 	this.ctx.fillStyle = '#F28705';
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
 				} else if (this.environment.bacteriaMatrix[i][j] >= 0) {
-					that.ctx.fillStyle = '#CCDC00';
+					this.ctx.fillStyle = '#CCDC00';
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
 				} else if (this.environment.antibioticMatrix[i][j] >= 0) {
-					that.ctx.fillStyle = '#F24405';
+					this.ctx.fillStyle = '#F24405';
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
 				}
 			}

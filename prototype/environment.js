@@ -16,8 +16,8 @@
 
 		// Fixed-length arrays containing bacteria
 		//   and antibiotic objects, respectively.
-		this.bacteriaList = [];
-		this.antibioticList = [];
+		this.bacteriaList = new Array(n*m);
+		this.antibioticList = new Array(n*m);
 
 		// Integer matrices holding the index at which
 		//   the bacteria or antibiotic can be found in
@@ -32,8 +32,8 @@
 			for (var j = 0; j < m; ++j) {
 				// Matrix cell values less than 0 indicate
 				//   that the cell is vacant.
-				this.bacteriaMatrix.push(-1);
-				this.antibioticMatrix.push(-1);
+				this.bacteriaMatrix[i].push(-1);
+				this.antibioticMatrix[i].push(-1);
 			}
 		}
 	};
@@ -53,14 +53,11 @@
 	//   matrix.
 	Environment.prototype.add = function (toAdd) {
 		var type = toAdd instanceof Bacteria ? 0 : 1;
-		var typeStr = type == 0 ? 'bacteria' : 'antibiotic';
-		var list = type ? this.bacteriaList : this.antibioticList;
-		var matrix = type ? this.bacteriaMatrix : this.antibioticMatrix;
+		var typeStr = !type ? 'bacteria' : 'antibiotic';
+		var list = !type ? this.bacteriaList : this.antibioticList;
+		var matrix = !type ? this.bacteriaMatrix : this.antibioticMatrix;
 		var x = this.boundX(toAdd.x);
 		var y = this.boundY(toAdd.y);
-
-		console.log(matrix); //rmv
-		console.log(matrix[x][y]); //rmv
 
 		if (matrix[x][y] < 0) {
 			for (var i = 0; i < list.length; ++i) {
@@ -71,10 +68,10 @@
 				}
 			}
 			console.error('Cannot add ' + typeStr + ': ' +
-				'no list vacancy @' + i);
+				'no list vacancy @ ' + i);
 		} else {
 			console.error('Cannot add ' + typeStr + ': ' +
-				'no matrix vacancy @' + x + ',' + y);
+				'no matrix vacancy @ ' + x + ',' + y);
 		}
 	};
 
@@ -92,7 +89,7 @@
 			list[listIndex] = null;
 		} else {
 			console.error('Cannot remove ' + typeStr + ': ' +
-				'no occupied cell @' + listIndex +
+				'no occupied cell @ ' + listIndex +
 				' (' + x + ',' + y + ')');
 		}
 	};
@@ -102,13 +99,11 @@
 		antibioticCount = antibioticCount || 10;
 
 		for (var i = 0; i < bacteriaCount; ++i) {
-			this.add(new Bacteria(
-				//
-			));
+			this.add(new Bacteria());
 		}
 
 		for (var i = 0; i < antibioticCount; ++i) {
-			//
+			this.add(new Antibiotic());
 		}
 	};
 
