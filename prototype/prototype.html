@@ -4,17 +4,11 @@
 	<title>AI Prototype</title>
 </head>
 <body>
-	<form onsubmit="sim.changeAntibiotic(); return false;">
-		Target Cell Color:
-		<input id="colorpicker" type="color" value="#880000">
-		<input type="submit">
-		<i>(may be simplified)</i>
-	</form><br>
 	<canvas width="600px" height="600px" style="border: 4px solid black;"></canvas><br>
 	<script type="text/javascript" src="utils.js"></script>
-	<script type="text/javascript" src="matrix.js"></script>
 	<script type="text/javascript" src="antibiotic.js"></script>
 	<script type="text/javascript" src="bacteria.js"></script>
+	<script type="text/javascript" src="environment.js"></script>
 	<script type="text/javascript" src="main.js"></script>
 	<button onclick="sim.start(0)">start</button>
 	<button onclick="sim.stop()">stop</button>

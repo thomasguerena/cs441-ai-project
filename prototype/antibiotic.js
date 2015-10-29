@@ -1,30 +1,20 @@
 (function () {
 	'use strict';
 
-	window.Antibiotic = function () {
-		this.center = 2048; // ~ middle of 0 and 4906;
-		this.leniency = 64; // uneffective range
+	window.Antibiotic = function (x, y, potency) {
+        this.x = x || Math.floor(Math.random()*16);
+        this.y = y || Math.floor(Math.random()*16);
+        this.potency = potency || 100;
 	};
 
-    // Reposition the antibiotic's weakness
-    Antibiotic.prototype.set = function (center) {
-        this.center = center;
-    };
-
-	Antibiotic.prototype.chanceOfSurvival = function(cell) {
-		var c = this.center;
-    	var l = Math.max(this.leniency - 2*Math.floor(generation/10), 0);
-    	var x = strToHex(cell.dna); // dna as decimal value
-    	var offset = Math.abs(c - x); // distance from center
-    	offset = Math.min(offset, l); // reduce offset
-    	if (offset > 0) {
-    		offset = offset / l; // scale offset
-    		offset = Math.min(offset, 1); // limit offset
-    		return Math.max(0.1, 1 - offset); // propability of survival
-    	} else {
-    		return x === c ? 1 : 0.1;
-    	}
-
-
+    /* @description Decides whether or not it kills
+     *   a bacteria. If it doesn't this antibiotic
+     *   will be wiped out.
+     * @returns {Boolean}
+     *   True: It kills the bacteria.
+     *   False: It does NOT kill the bacteria.
+    */
+	Antibiotic.prototype.kill = function(cell) {
+		return Math.random() < this.potency/100;
 	};
 })();
