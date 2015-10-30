@@ -8,6 +8,8 @@
 		this.environment = new Environment(16, 16);
 		this.canvas = document.querySelector('canvas');
 		this.ctx = this.canvas.getContext('2d');
+		this.ctx.textAlign = 'center';
+		this.ctx.font = '18px Helvetica';
 
 		window.generation = 0; // current generation - global
 		this.criticalGeneration = 10; // when to introduce antibiotic
@@ -34,23 +36,47 @@
 		console.log('Antibiotic count: ' + this.environment.antibioticCount);
 	}
 
-	Simulation.prototype.render = function () {
+	Simulation.prototype.render = function (withText) {
+		var colors = {
+			text: '#FFFFFF',
+			bacteria: '#CCDC00',
+			antibiotic: '#F24405',
+			challenge: '#F28705'
+		};
 		var tilesize = Math.floor(this.canvas.width/this.environment.n);
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		for (var i = 0; i < this.environment.n; ++i) {
 			for (var j = 0; j < this.environment.m; ++j) {
 				var cx = tilesize*i;
 				var cy = tilesize*j;
-				if (this.environment.bacteriaMatrix[i][j] >= 0
-				 && this.environment.antibioticMatrix[i][j] >= 0) {
-				 	this.ctx.fillStyle = '#F28705';
+				var tx = cx + tilesize/2;
+				var ty = (cy + tilesize/2) + 5;
+				var ai = this.environment.antibioticMatrix[i][j];
+				var bi = this.environment.bacteriaMatrix[i][j];
+				if (ai >= 0 && bi >= 0) {
+				 	var psurvival = 1 - this.environment.antibioticList[ai].potency/100;
+				 	this.ctx.fillStyle = colors.challenge;
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
-				} else if (this.environment.bacteriaMatrix[i][j] >= 0) {
-					this.ctx.fillStyle = '#CCDC00';
+					if (withText) {
+						this.ctx.fillStyle = colors.text;
+						this.ctx.fillText(psurvival, tx, ty);
+					}
+				} else if (ai >= 0) {
+					var potency = this.environment.antibioticList[ai].potency;
+					this.ctx.fillStyle = colors.antibiotic;
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
-				} else if (this.environment.antibioticMatrix[i][j] >= 0) {
-					this.ctx.fillStyle = '#F24405';
+					if (withText) {
+						this.ctx.fillStyle = colors.text;
+						this.ctx.fillText(potency, tx, ty);
+					}
+				} else if (bi >= 0) {
+					var dna = this.environment.bacteriaList[bi].dna;
+					this.ctx.fillStyle = colors.bacteria;
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
+					if (withText) {
+						this.ctx.fillStyle = colors.text;
+						this.ctx.fillText(dna, tx, ty);
+					}
 				}
 			}
 		}
@@ -134,7 +160,7 @@
 		// });
 
 		this.report();
-		this.render();
+		this.render(true);
 	};
 
 	Simulation.prototype.changeAntibiotic = function() {
