@@ -73,8 +73,8 @@
 
 
 	window.Bacteria = function (x, y, dna) {
-		this.x = x || Math.floor(Math.random()*16);
-		this.y = y || Math.floor(Math.random()*16);
+		this.x = x > -1 ? x : Math.floor(Math.random()*16);
+		this.y = y > -1 ? y : Math.floor(Math.random()*16);
 		this.dna = dna || (function() {
 		    var code = '';
 		    while (code.length < 3) {

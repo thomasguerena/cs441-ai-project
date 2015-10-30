@@ -25,6 +25,10 @@
 		this.bacteriaMatrix = [];
 		this.antibioticMatrix = [];
 
+		// Population trackers
+		this.bacteriaCount = 0;
+		this.antibioticCount = 0;
+
 		// Construct matrices
 		for (var i = 0; i < n; ++i) {
 			this.bacteriaMatrix.push([]);
@@ -56,14 +60,15 @@
 		var typeStr = !type ? 'bacteria' : 'antibiotic';
 		var list = !type ? this.bacteriaList : this.antibioticList;
 		var matrix = !type ? this.bacteriaMatrix : this.antibioticMatrix;
-		var x = this.boundX(toAdd.x);
-		var y = this.boundY(toAdd.y);
+		var x = toAdd.x = this.boundX(toAdd.x);
+		var y = toAdd.y = this.boundY(toAdd.y);
 
 		if (matrix[x][y] < 0) {
 			for (var i = 0; i < list.length; ++i) {
 				if (list[i] == null) {
 					list[i] = toAdd;
 					matrix[x][y] = i;
+					++this[typeStr + 'Count'];
 					return;
 				}
 			}
@@ -97,13 +102,21 @@
 	Environment.prototype.populate = function (bacteriaCount, antibioticCount, dna) {
 		bacteriaCount = bacteriaCount || 20;
 		antibioticCount = antibioticCount || 10;
+		// Provide random, but unique, x-coordinates to the bacteria
+		//   and antibiotic constructors to avoid matrix collisions.
+		var rxa = new Array(antibioticCount); // ...for antibiotics
+		var rxb = new Array(bacteriaCount); // ...for bacteria
+		for (var i = 0; i < rxa.length; ++i) rxa[i] = i;
+		for (var i = 0; i < rxb.length; ++i) rxb[i] = i;
+		knuthShuffle(rxa);
+		knuthShuffle(rxb);
 
 		for (var i = 0; i < bacteriaCount; ++i) {
-			this.add(new Bacteria());
+			this.add(new Bacteria(rxb[i], rxb[i+1]));
 		}
 
 		for (var i = 0; i < antibioticCount; ++i) {
-			this.add(new Antibiotic());
+			this.add(new Antibiotic(rxa[i], rxa[i+1]));
 		}
 	};
 

@@ -29,16 +29,9 @@
 	};
 
 	Simulation.prototype.report = function () {
-		var that = this;
-		var bacteriaCount = 0;
-		var antibioticCount = 0;
-		for (var i = 0; i < this.environment.n; ++i) {
-			if (this.environment.bacteriaList[i] != null) ++bacteriaCount;
-			if (this.environment.antibioticList[i] != null) ++antibioticCount;
-		}
 		console.log('\n\nGeneration ' + generation + '\n');
-		console.log('Bacteria count: ' + bacteriaCount);
-		console.log('Antibiotic count: ' + antibioticCount);
+		console.log('Bacteria count: ' + this.environment.bacteriaCount);
+		console.log('Antibiotic count: ' + this.environment.antibioticCount);
 	}
 
 	Simulation.prototype.render = function () {
@@ -71,7 +64,7 @@
 		return this.environment.bacteriaList.length == 0;
 	};
 
-	Simulation.prototype.loop = function () {
+	Simulation.prototype.loop = function (speed) {
 
 		if (this.PAUSED === false) {
 			this.update();
@@ -92,8 +85,8 @@
 		// C: Cells are still evolving...
 		else {
 			setTimeout(function (that) {
-				that.loop();
-			}, 50, this);
+				that.loop(speed);
+			}, speed, this);
 		}
 	};
 

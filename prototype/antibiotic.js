@@ -2,8 +2,8 @@
 	'use strict';
 
 	window.Antibiotic = function (x, y, potency) {
-        this.x = x || Math.floor(Math.random()*16);
-        this.y = y || Math.floor(Math.random()*16);
+        this.x = x > -1 ? x : Math.floor(Math.random()*16);
+        this.y = y > -1 ? y : Math.floor(Math.random()*16);
         this.potency = potency || 100;
 	};
 
