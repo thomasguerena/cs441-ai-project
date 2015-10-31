@@ -25,4 +25,31 @@
 		}
 		return list;
 	};
+
+	/* @description Only push the item if it does not exist
+	 * already in the array. Duplicates are identified using
+	 * the comparison function parameter.
+	 *
+	 * @param {any} item: The element to be pushed onto the array.
+	 * @param {function} compare: Function which accepts two items
+	 *   from the array and returns true when they match, and false
+	 *   otherwise. The first parameter will always be the item which
+	 *   is being added to the array.
+	 *
+	 * @returns {Boolean}
+	 *   true: The item was added to the array.
+	 *   false: The item was NOT added to the array.
+	*/
+	Array.prototype.pushUnique = function (item, compare) {
+	    if (typeof item == undefined) return false;
+	    if (typeof compare != 'function') {
+	    	console.error('Invalid comparison function');
+	    	return false;
+	    }
+	    for (var i = 0; i < this.length; ++i) {
+	        if (compare(item, this[i]) === true) return false;
+	    }
+	    this.push(item);
+	    return true;
+	};
 })();

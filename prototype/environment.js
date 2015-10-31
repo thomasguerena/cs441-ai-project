@@ -100,23 +100,28 @@
 	};
 
 	Environment.prototype.populate = function (bacteriaCount, antibioticCount, dna) {
+
+		var xycoords = []; // array of unique xy-coordinates
+		var matchCoordinates = function (a, b) {
+			return a.x == b.x && a.y == b.y;
+		};
+
 		bacteriaCount = bacteriaCount || 20;
 		antibioticCount = antibioticCount || 10;
-		// Provide random, but unique, x-coordinates to the bacteria
-		//   and antibiotic constructors to avoid matrix collisions.
-		var rxa = new Array(antibioticCount); // ...for antibiotics
-		var rxb = new Array(bacteriaCount); // ...for bacteria
-		for (var i = 0; i < rxa.length; ++i) rxa[i] = i;
-		for (var i = 0; i < rxb.length; ++i) rxb[i] = i;
-		knuthShuffle(rxa);
-		knuthShuffle(rxb);
 
-		for (var i = 0; i < bacteriaCount; ++i) {
-			this.add(new Bacteria(rxb[i], rxb[i+1]));
+		while (xycoords.length < antibioticCount + bacteriaCount) {
+			xycoords.pushUnique({
+				x: Math.floor(Math.random()*this.n),
+				y: Math.floor(Math.random()*this.m)
+			}, matchCoordinates);
 		}
 
-		for (var i = 0; i < antibioticCount; ++i) {
-			this.add(new Antibiotic(rxa[i], rxa[i+1]));
+		for (var i = 0; i < bacteriaCount; ++i) {
+			this.add(new Bacteria(xycoords[i].x, xycoords[i].y));
+		}
+
+		for (var j = i; j-i < antibioticCount; ++j) {
+			this.add(new Antibiotic(xycoords[j].x, xycoords[j].y));
 		}
 	};
 
@@ -128,15 +133,17 @@
 		};
 		for (var i = -1; i < 2; ++i) {
 			for (var j = -1; j < 2; ++j) {
-				var x = this.boundX(cell.x + i);
-				var y = this.boundY(cell.y + j);
-				var ali = this.bacteriaMatrix[x][y]; // antibioticList index
-				var bli = this.bacteriaMatrix[x][y]; // bacteriaList index
-				if (ali >= 0) {
-					neighbors.antibiotic.push(this.antibioticList[ali]);
-				}
-				if (bli >= 0) {
-					neighbors.bacteria.push(this.bacteriaList[ali]);
+				if (i != 0 || j != 0) {
+					var x = this.boundX(cell.x + i);
+					var y = this.boundY(cell.y + j);
+					var ai = this.antibioticMatrix[x][y]; // antibioticList index
+					var bi = this.bacteriaMatrix[x][y]; // bacteriaList index
+					if (ai >= 0) {
+						neighbors.antibiotic.push(this.antibioticList[ai]);
+					}
+					if (bi >= 0) {
+						neighbors.bacteria.push(this.bacteriaList[bi]);
+					}
 				}
 			}
 		}
@@ -153,15 +160,17 @@
 		};
 		for (var i = -1; i < 2; ++i) {
 			for (var j = -1; j < 2; ++j) {
-				var x = this.boundX(cell.x + i);
-				var y = this.boundY(cell.y + j);
-				var ali = this.bacteriaMatrix[x][y]; // antibioticList index
-				var bli = this.bacteriaMatrix[x][y]; // bacteriaList index
-				if (ali < 0) {
-					emptyNeighbors.antibiotic.push({ x: x, y: y });
-				}
-				if (bli >= 0) {
-					emptyNeighbors.bacteria.push({ x: x, y: y });
+				if (i != 0 || j != 0) {
+					var x = this.boundX(cell.x + i);
+					var y = this.boundY(cell.y + j);
+					var ai = this.antibioticMatrix[x][y]; // antibioticList index
+					var bi = this.bacteriaMatrix[x][y]; // bacteriaList index
+					if (ai < 0) {
+						emptyNeighbors.antibiotic.push({ x: x, y: y });
+					}
+					if (bi < 0) {
+						emptyNeighbors.bacteria.push({ x: x, y: y });
+					}
 				}
 			}
 		}
