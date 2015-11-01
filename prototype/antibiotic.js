@@ -4,7 +4,7 @@
 	window.Antibiotic = function (x, y, potency) {
         this.x = x > -1 ? x : Math.floor(Math.random()*16);
         this.y = y > -1 ? y : Math.floor(Math.random()*16);
-        this.potency = potency || 100;
+        this.potency = potency > -1 ? potency : 100;
 	};
 
     /* @description Decides whether or not it kills

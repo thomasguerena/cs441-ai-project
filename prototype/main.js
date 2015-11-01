@@ -14,7 +14,7 @@
 		window.generation = 0; // current generation - global
 		this.criticalGeneration = 10; // when to introduce antibiotic
 
-		this.environment.populate();
+		this.environment.populate(20, 3);
 		this.render();
 		this.report();
 	};
@@ -53,6 +53,8 @@
 				var ty = (cy + tilesize/2) + 5;
 				var ai = this.environment.antibioticMatrix[i][j];
 				var bi = this.environment.bacteriaMatrix[i][j];
+				this.ctx.globalAlpha = 1;
+
 				if (ai >= 0 && bi >= 0) {
 				 	var psurvival = 1 - this.environment.antibioticList[ai].potency/100;
 				 	this.ctx.fillStyle = colors.challenge;
@@ -63,9 +65,11 @@
 					}
 				} else if (ai >= 0) {
 					var potency = this.environment.antibioticList[ai].potency;
+					this.ctx.globalAlpha = potency/100;
 					this.ctx.fillStyle = colors.antibiotic;
 					this.ctx.fillRect(cx, cy, tilesize, tilesize);
 					if (withText) {
+						this.ctx.globalAlpha = 1;
 						this.ctx.fillStyle = colors.text;
 						this.ctx.fillText(potency, tx, ty);
 					}

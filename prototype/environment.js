@@ -99,32 +99,6 @@
 		}
 	};
 
-	Environment.prototype.populate = function (bacteriaCount, antibioticCount, dna) {
-
-		var xycoords = []; // array of unique xy-coordinates
-		var matchCoordinates = function (a, b) {
-			return a.x == b.x && a.y == b.y;
-		};
-
-		bacteriaCount = bacteriaCount || 20;
-		antibioticCount = antibioticCount || 10;
-
-		while (xycoords.length < antibioticCount + bacteriaCount) {
-			xycoords.pushUnique({
-				x: Math.floor(Math.random()*this.n),
-				y: Math.floor(Math.random()*this.m)
-			}, matchCoordinates);
-		}
-
-		for (var i = 0; i < bacteriaCount; ++i) {
-			this.add(new Bacteria(xycoords[i].x, xycoords[i].y));
-		}
-
-		for (var j = i; j-i < antibioticCount; ++j) {
-			this.add(new Antibiotic(xycoords[j].x, xycoords[j].y));
-		}
-	};
-
 	// @description Return an array of 0 to 8 neighboring bacteria cells.
 	Environment.prototype.getAdjacent = function (cell) {
 		var neighbors = {
@@ -175,6 +149,54 @@
 			}
 		}
 		return emptyNeighbors;
-	}
+	};
+
+
+	/*-- Biological Functions --*/
+
+	Environment.prototype.populate = function (bacteriaCount, antibioticCount, dna) {
+
+		var xycoords = []; // array of unique xy-coordinates
+		var matchCoordinates = function (a, b) {
+			return a.x == b.x && a.y == b.y;
+		};
+
+		bacteriaCount = bacteriaCount || 20;
+		antibioticCount = antibioticCount || 10;
+
+		while (xycoords.length < antibioticCount + bacteriaCount) {
+			xycoords.pushUnique({
+				x: Math.floor(Math.random()*this.n),
+				y: Math.floor(Math.random()*this.m)
+			}, matchCoordinates);
+		}
+
+		for (var i = 0; i < bacteriaCount; ++i) {
+			this.add(new Bacteria(xycoords[i].x, xycoords[i].y));
+		}
+
+		for (var j = i; j-i < antibioticCount; ++j) {
+			this.add(new Antibiotic(xycoords[j].x, xycoords[j].y));
+		}
+	};
+
+	Environment.prototype.spreadAntibiotic = function () {
+		var spreading = this.antibioticList.slice(); // create copy
+		for (var i = 0; i < spreading.length; ++i) {
+			if (spreading[i]) {
+				var emptyAdj = this.getEmptyAdjacent(spreading[i]).antibiotic;
+				for (var j = 0; j < emptyAdj.length; ++j) {
+					var p = Math.max(spreading[i].potency - 20, 0);
+					if (p > 0) {
+						this.add(new Antibiotic(
+							emptyAdj[j].x,
+							emptyAdj[j].y,
+							p
+						));
+					}
+				}
+			}
+		}
+	};
 
 })();
