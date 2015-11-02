@@ -29,6 +29,9 @@
 		this.bacteriaCount = 0;
 		this.antibioticCount = 0;
 
+		// Behavior trackers
+		this.antibioticDiffusion = 1; // arbitrary non-zero initial value
+
 		// Construct matrices
 		for (var i = 0; i < n; ++i) {
 			this.bacteriaMatrix.push([]);
@@ -92,10 +95,14 @@
 		if (listIndex >= 0) {
 			matrix[x][y] = -1;
 			list[listIndex] = null;
+			--this[typeStr + 'Count'];
 		} else {
 			console.error('Cannot remove ' + typeStr + ': ' +
 				'no occupied cell @ ' + listIndex +
 				' (' + x + ',' + y + ')');
+
+			console.log(matrix[x][y]); //rmv
+			console.log(list[listIndex]); //rmv
 		}
 	};
 
@@ -180,9 +187,14 @@
 		}
 	};
 
-	// @returns {integer} The number of additional cells occupied
-	//   by antibiotic this generation.
+	// @description Spreads antiobitic radially, given that the antibiotic has
+	//   not reached a minimum density. This is calculated using the number of
+	//   additional cells occupied by antibiotic each generation.
+	//   See variable: this.antibioticDiffusion
 	Environment.prototype.spreadAntibiotic = function () {
+		if (this.antibioticDiffusion == 0) return; // reached minimum density
+		if (generation % 5 !== 0) return; // throttle the rate of diffusion
+
 		var spreading = this.antibioticList.slice(); // create copy
 		var numSpread = 0;
 		for (var i = 0; i < spreading.length; ++i) {
@@ -201,35 +213,81 @@
 				}
 			}
 		}
-		return numSpread;
+		this.antibioticDiffusion = numSpread;
 	};
 
 	Environment.prototype.updateBacteria = function () {
 
-		// EXAMPLE of a move decision...
+		this.moveBacteria();
 
+		if (generation%50 === 0) {
+			console.log('----------------------------------------'); // rmv
+			console.log('----------------Mutating----------------'); // rmv
+			console.log('----------------------------------------'); // rmv
+			this.mutateBacteria();
+		}
+
+		if (generation%3 === 0) {
+			this.replicateBacteria();
+		}
+
+		// TODO
+
+		// if (generation%5 === 0) {
+		// 	this.mateBacteria();
+		// }
+	};
+
+	Environment.prototype.moveBacteria = function () {
 		var bl = this.bacteriaList.slice(); // create copy
 		for (var i = 0; i < bl.length; ++i) {
 			if (bl[i] != null) {
-
 				var move = Number(bl[i].dna[0]);
 				var decision = 0;
-
-				// console.log('\nMoving: ' + bl[i].x + ',' + bl[i].y
-				// 	+ ' (' + move + ')'); //rmv
-
 				var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
 				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
 				var availableIndex = move % emptyAdj.length;
 				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
 				decision = emptyAdj[availableIndex];
-
-				// console.log('...moves to ' + decision.x + ',' + decision.y); //rmv
-
 				this.remove(bl[i]);
 				bl[i].x = decision.x;
 				bl[i].y = decision.y;
 				this.add(bl[i]);
+			}
+		}
+	};
+
+	Environment.prototype.mutateBacteria = function () {
+		for (var i = 0; i < this.bacteriaList.length; ++i) {
+			if (this.bacteriaList[i] != null) {
+				this.bacteriaList[i].mutate();
+			}
+		}
+	};
+
+	Environment.prototype.replicateBacteria = function () {
+		var bl = this.bacteriaList.slice(); // create copy
+		for (var i = 0; i < bl.length; ++i) {
+			if (bl[i] != null) {
+				var replicate = Number(bl[i].dna[0]);
+				var decision = 0;
+				var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
+				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
+				var availableIndex = replicate % emptyAdj.length;
+				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
+				decision = emptyAdj[availableIndex];
+
+				console.log('Replicating from ' + bl[i].x + ',' + bl[i].y); //rmv
+
+				if (bl[i].x != decision.x && bl[i].y != decision.y) {
+					bl[i].x = decision.x;
+					bl[i].y = decision.y;
+					this.add(bl[i]);
+
+					console.log('...to ' + bl[i].x + ',' + bl[i].y); //rmv
+				} else {
+					console.log('...to nowhere...'); //rmv
+				}
 			}
 		}
 	};

@@ -12,8 +12,6 @@
 		this.ctx.font = '18px Helvetica';
 
 		window.generation = 0; // current generation - global
-		this.criticalGeneration = 10; // when to introduce antibiotic
-		this.antibioticDiffusion = 1; // arbitrary non-zero initial value
 
 		this.environment.populate(8, 3);
 		this.render();
@@ -88,11 +86,11 @@
 	};
 
 	Simulation.prototype.checkSuccess = function () {
-		return this.environment.antibioticList.length == 0;
+		return this.environment.antibioticCount == 0;
 	};
 
 	Simulation.prototype.checkFailure = function () {
-		return this.environment.bacteriaList.length == 0;
+		return this.environment.bacteriaCount == 0;
 	};
 
 	Simulation.prototype.loop = function (speed) {
@@ -124,59 +122,12 @@
 	/*-- Evolution Loop --*/
 
 	Simulation.prototype.update = function () {
-		var that = this;
-		var killset = []; // cells to kill
-		var cloneset = []; // cells to clone
 
 		// Next generation
 		generation += 1;
 
-		// 1. Cell Mutation (every N generations)
-		if (generation%1 === 0) {
-			// this.bacteria.mutate();
-		}
-
-
-		if (this.antibioticDiffusion > 0 && generation%5 === 0) {
-			this.antibioticDiffusion = this.environment.spreadAntibiotic();
-		}
-
+		this.environment.spreadAntibiotic();
 		this.environment.resolveChallenges();
-
-
-
-
-
-
-		// 2. Horizontal Gene Transfer
-		// this.bacteria.horizontalGeneTransfer();
-
-		// 3. Apply Antibiotic
-
-		// this.bacteria.cells.forEach(function (cell) {
-		// 	if (generation > that.criticalGeneration) {
-		// 		cell.fitness = that.antibiotic.chanceOfSurvival(cell);
-		// 	}
-		// 	if (cell.survives() === false) {
-		// 		killset.push(cell);
-		// 	} else {
-		// 		cloneset.push(cell);
-		// 	}
-		// });
-
-		// 4. Cell Culling
-
-		// killset.forEach(function (cell) {
-		// 	that.bacteria.kill(cell);
-		// });
-
-		// 5. Replicate
-
-		// cloneset.forEach(function (cell) {
-		// 	that.bacteria.replicateCell(cell);
-		// });
-
-
 		this.environment.updateBacteria();
 
 		this.report();

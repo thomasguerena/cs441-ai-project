@@ -84,12 +84,11 @@
 		})();
 	};
 
-	Bacteria.prototype.decideActions = function () {
-		//
-	};
-
 	Bacteria.prototype.mutate = function () {
-		// TODO - this needs to be subtle
+		var i = Math.floor(Math.random() * this.dna.length);
+		this.dna = this.dna.substr(0, i)
+				 + (Number(this.dna[i]) + 1)
+				 + this.dna.substr(i + 1, this.dna.length);
 	};
 
 	Bacteria.prototype.mate = function (potentialMates) {
