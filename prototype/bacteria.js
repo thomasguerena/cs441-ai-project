@@ -84,6 +84,10 @@
 		})();
 	};
 
+	Bacteria.prototype.decideActions = function () {
+		//
+	};
+
 	Bacteria.prototype.mutate = function () {
 		// TODO - this needs to be subtle
 	};

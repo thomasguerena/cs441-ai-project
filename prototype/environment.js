@@ -82,9 +82,9 @@
 
 	Environment.prototype.remove = function (toRemove) {
 		var type = toRemove instanceof Bacteria ? 0 : 1;
-		var typeStr = type ? 'bacteria' : 'antibiotic';
-		var list = type ? this.bacteriaList : this.antibioticList;
-		var matrix = type ? this.bacteriaMatrix : this.antibioticMatrix;
+		var typeStr = !type ? 'bacteria' : 'antibiotic';
+		var list = !type ? this.bacteriaList : this.antibioticList;
+		var matrix = !type ? this.bacteriaMatrix : this.antibioticMatrix;
 		var x = this.boundX(toRemove.x);
 		var y = this.boundY(toRemove.y);
 		var listIndex = matrix[x][y];
@@ -180,8 +180,11 @@
 		}
 	};
 
+	// @returns {integer} The number of additional cells occupied
+	//   by antibiotic this generation.
 	Environment.prototype.spreadAntibiotic = function () {
 		var spreading = this.antibioticList.slice(); // create copy
+		var numSpread = 0;
 		for (var i = 0; i < spreading.length; ++i) {
 			if (spreading[i]) {
 				var emptyAdj = this.getEmptyAdjacent(spreading[i]).antibiotic;
@@ -193,6 +196,54 @@
 							emptyAdj[j].y,
 							p
 						));
+						++numSpread;
+					}
+				}
+			}
+		}
+		return numSpread;
+	};
+
+	Environment.prototype.updateBacteria = function () {
+
+		// EXAMPLE of a move decision...
+
+		var bl = this.bacteriaList.slice(); // create copy
+		for (var i = 0; i < bl.length; ++i) {
+			if (bl[i] != null) {
+
+				var move = Number(bl[i].dna[0]);
+				var decision = 0;
+
+				// console.log('\nMoving: ' + bl[i].x + ',' + bl[i].y
+				// 	+ ' (' + move + ')'); //rmv
+
+				var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
+				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
+				var availableIndex = move % emptyAdj.length;
+				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
+				decision = emptyAdj[availableIndex];
+
+				// console.log('...moves to ' + decision.x + ',' + decision.y); //rmv
+
+				this.remove(bl[i]);
+				bl[i].x = decision.x;
+				bl[i].y = decision.y;
+				this.add(bl[i]);
+			}
+		}
+	};
+
+	Environment.prototype.resolveChallenges = function () {
+		for (var i = 0; i < this.n; ++i) {
+			for (var j = 0; j < this.m; ++j) {
+				var ai = this.antibioticMatrix[i][j];
+				var bi = this.bacteriaMatrix[i][j];
+				if (ai > -1 && bi > -1) {
+					if (this.antibioticList[ai].kill()) {
+						this.remove(this.bacteriaList[bi]);
+					} else {
+						this.remove(this.antibioticList[ai]);
 					}
 				}
 			}

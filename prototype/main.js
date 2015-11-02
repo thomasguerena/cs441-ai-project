@@ -13,8 +13,9 @@
 
 		window.generation = 0; // current generation - global
 		this.criticalGeneration = 10; // when to introduce antibiotic
+		this.antibioticDiffusion = 1; // arbitrary non-zero initial value
 
-		this.environment.populate(20, 3);
+		this.environment.populate(8, 3);
 		this.render();
 		this.report();
 	};
@@ -23,7 +24,7 @@
 
 	Simulation.prototype.start = function () {
 		this.PAUSED = false;
-		this.loop(500);
+		this.loop(100);
 	};
 
 	Simulation.prototype.stop = function () {
@@ -135,6 +136,18 @@
 			// this.bacteria.mutate();
 		}
 
+
+		if (this.antibioticDiffusion > 0 && generation%5 === 0) {
+			this.antibioticDiffusion = this.environment.spreadAntibiotic();
+		}
+
+		this.environment.resolveChallenges();
+
+
+
+
+
+
 		// 2. Horizontal Gene Transfer
 		// this.bacteria.horizontalGeneTransfer();
 
@@ -163,15 +176,11 @@
 		// 	that.bacteria.replicateCell(cell);
 		// });
 
-		this.report();
-		this.render(true);
-	};
 
-	Simulation.prototype.changeAntibiotic = function() {
-		var colorpicker = document.getElementById('colorpicker');
-		var reduced = reduceHex(colorpicker.value);
-		colorpicker.value = expandHex(reduced);
-		this.antibiotic.set(strToHex(reduced));
+		this.environment.updateBacteria();
+
+		this.report();
+		this.render(false);
 	};
 
 	window.sim = new Simulation();
