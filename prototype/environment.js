@@ -96,14 +96,12 @@
 			matrix[x][y] = -1;
 			list[listIndex] = null;
 			--this[typeStr + 'Count'];
-		} else {
-			console.error('Cannot remove ' + typeStr + ': ' +
-				'no occupied cell @ ' + listIndex +
-				' (' + x + ',' + y + ')');
-
-			console.log(matrix[x][y]); //rmv
-			console.log(list[listIndex]); //rmv
 		}
+		// else {
+		// 	console.error('Cannot remove ' + typeStr + ': ' +
+		// 		'no occupied cell @ ' + listIndex +
+		// 		' (' + x + ',' + y + ')');
+		// }
 	};
 
 	// @description Return an array of 0 to 8 neighboring bacteria cells.
@@ -198,11 +196,12 @@
 		var spreading = this.antibioticList.slice(); // create copy
 		var numSpread = 0;
 		for (var i = 0; i < spreading.length; ++i) {
-			if (spreading[i]) {
+			if (spreading[i] && spreading[i].diffused == false) {
 				var emptyAdj = this.getEmptyAdjacent(spreading[i]).antibiotic;
 				for (var j = 0; j < emptyAdj.length; ++j) {
 					var p = Math.max(spreading[i].potency - 20, 0);
 					if (p > 0) {
+						spreading[i].diffused = true;
 						this.add(new Antibiotic(
 							emptyAdj[j].x,
 							emptyAdj[j].y,
@@ -221,9 +220,6 @@
 		this.moveBacteria();
 
 		if (generation%50 === 0) {
-			console.log('----------------------------------------'); // rmv
-			console.log('----------------Mutating----------------'); // rmv
-			console.log('----------------------------------------'); // rmv
 			this.mutateBacteria();
 		}
 
@@ -247,6 +243,8 @@
 				var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
 				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
 				var availableIndex = move % emptyAdj.length;
+
+				if (emptyAdj.length == 0) return;
 				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
 				decision = emptyAdj[availableIndex];
 				this.remove(bl[i]);
@@ -269,7 +267,7 @@
 		var bl = this.bacteriaList.slice(); // create copy
 		for (var i = 0; i < bl.length; ++i) {
 			if (bl[i] != null) {
-				var replicate = Number(bl[i].dna[0]);
+				var replicate = Number(bl[i].dna[1]);
 				var decision = 0;
 				var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
 				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
@@ -277,16 +275,11 @@
 				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
 				decision = emptyAdj[availableIndex];
 
-				console.log('Replicating from ' + bl[i].x + ',' + bl[i].y); //rmv
-
+				if (emptyAdj.length == 0) return;
 				if (bl[i].x != decision.x && bl[i].y != decision.y) {
 					bl[i].x = decision.x;
 					bl[i].y = decision.y;
 					this.add(bl[i]);
-
-					console.log('...to ' + bl[i].x + ',' + bl[i].y); //rmv
-				} else {
-					console.log('...to nowhere...'); //rmv
 				}
 			}
 		}

@@ -87,7 +87,7 @@
 	Bacteria.prototype.mutate = function () {
 		var i = Math.floor(Math.random() * this.dna.length);
 		this.dna = this.dna.substr(0, i)
-				 + (Number(this.dna[i]) + 1)
+				 + (Number(this.dna[i]) + 1)%10
 				 + this.dna.substr(i + 1, this.dna.length);
 	};
 
