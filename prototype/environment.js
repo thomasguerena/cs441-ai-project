@@ -279,7 +279,7 @@
 				if (bl[i].x != decision.x && bl[i].y != decision.y) {
 					bl[i].x = decision.x;
 					bl[i].y = decision.y;
-					this.add(bl[i]);
+					this.add(new Bacteria(bl[i].x, bl[i].y, bl[i].dna));
 				}
 			}
 		}

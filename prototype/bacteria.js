@@ -73,6 +73,7 @@
 
 
 	window.Bacteria = function (x, y, dna) {
+		this.birthGeneration = window.generation;
 		this.x = x > -1 ? x : Math.floor(Math.random()*16);
 		this.y = y > -1 ? y : Math.floor(Math.random()*16);
 		this.dna = dna || (function() {
@@ -82,6 +83,10 @@
 		    }
 		    return code;
 		})();
+	};
+
+	Bacteria.prototype.age = function () {
+		return window.generation - this.birthGeneration;
 	};
 
 	Bacteria.prototype.mutate = function () {
