@@ -234,7 +234,7 @@
 		// }
 	};
 
-	Environment.prototype.moveBacteria = function () {
+	Environment.prototype.moveBacteria = function (DEBUG) {
 		var bl = this.bacteriaList.slice(); // create copy
 		for (var i = 0; i < bl.length; ++i) {
 			if (bl[i] != null) {
@@ -244,7 +244,8 @@
 				var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
 				var availableIndex = move % emptyAdj.length;
 
-				if (emptyAdj.length == 0) return;
+				if (emptyAdj.length == 0) continue;
+
 				availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
 				decision = emptyAdj[availableIndex];
 				this.remove(bl[i]);
