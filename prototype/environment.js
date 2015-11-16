@@ -215,6 +215,10 @@
 		this.antibioticDiffusion = numSpread;
 	};
 
+	Environment.prototype.dissolveAntibiotic = function () {
+		//
+	};
+
 	Environment.prototype.updateBacteria = function () {
 
 		this.moveBacteria();

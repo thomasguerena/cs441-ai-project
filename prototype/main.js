@@ -127,6 +127,7 @@
 		generation += 1;
 
 		this.environment.spreadAntibiotic();
+		this.environment.dissolveAntibiotic();
 		this.environment.resolveChallenges();
 		this.environment.updateBacteria();
 
