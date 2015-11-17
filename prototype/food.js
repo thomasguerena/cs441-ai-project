@@ -13,4 +13,10 @@
 		return bitesize;
 	};
 
+	Food.prototype.update = function () {
+		if (this.sustenance < 1) {
+			environment.remove(this);
+		}
+	}
+
 })();

@@ -15,14 +15,17 @@
 		// FIXME - doesn't handle collisions
 		this.x = x > -1 ? x : Math.floor(Math.random()*environment.n);
 		this.y = y > -1 ? y : Math.floor(Math.random()*environment.n);
-		this.heading = { x: -1, y: 0 }; // TODO - how is this decided?
+		this.heading = { x: 0, y: 0 };
+		while (this.heading.x == 0 && this.heading.y == 0) {
+			// Random headings are fine so long as food can be detected within
+			// some non-adjacent proximity.
+			this.heading = {
+				x: Math.random() > 0.5 ? -Math.round(Math.random()) : Math.round(Math.random()),
+				y: Math.random() > 0.5 ? -Math.round(Math.random()) : Math.round(Math.random())
+			};
+		}
 	};
 
-	/**
-	 * @returns {Boolean}
-	 *   true: The bacteria cell survives this generation.
-	 *   false: The bacteria cell dies this generation.
-	*/
 	Bacteria.prototype.update = function () {
 
 		this.age += 1; // age one generation
@@ -43,54 +46,39 @@
 			this.actions[settings.bacteria.priorities.third]();
 		}
 
-		return this.energy > 0;
+		if (this.energy < 1) environment.remove(this);
 	};
 
 	Bacteria.prototype.move = function () {
 
-		// TODO - this is old code from environment
 		var COST = 1;
 		var emptyAdj = environment.getEmptyAdjacent(this).bacteria;
 
 		if (emptyAdj.length > 0) {
+			environment.remove(this);
 			this.x += this.heading.x;
 			this.y += this.heading.y;
 			this.energy -= COST;
+			environment.add(this);
 		} else {
 			// TODO - yield action
 			console.log('Cannot move...'); //rmv
 		}
-
-		// var bl = this.bacteriaList.slice(); // create copy
-		// for (var i = 0; i < bl.length; ++i) {
-		// 	if (bl[i] != null) {
-		// 		var move = Number(bl[i].dna[0]);
-		// 		var decision = 0;
-		// 		var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
-		// 		var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
-		// 		var availableIndex = move % emptyAdj.length;
-
-		// 		if (emptyAdj.length == 0) continue;
-
-		// 		availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
-		// 		decision = emptyAdj[availableIndex];
-		// 		this.remove(bl[i]);
-		// 		bl[i].x = decision.x;
-		// 		bl[i].y = decision.y;
-		// 		this.add(bl[i]);
-		// 	}
-		// }
 	}
 
 	Bacteria.prototype.eat = function () {
 
 		var adjFood = environment.getAdjacent(this).food;
+		var nearbyFood = null;
 
 		if (adjFood.length == 0) {
-			console.log('searching for food!'); //rmv
 			this.move();
+			nearbyFood = this.senseFood();
+			if (nearbyFood) {
+				this.heading.x = nearbyFood.x > this.x ? 1 : -1;
+				this.heading.y = nearbyFood.y > this.y ? 1 : -1;
+			}
 		} else {
-			console.log('eating!'); //rmv
 			this.energy += adjFood[0].munch();
 		}
 	};
@@ -142,5 +130,24 @@
 		if (Math.floor(Math.random()*100) < settings.bacteria.mutationRate) {
 			this.diversity += settings.bacteria.mutationStep;
 		}
+	};
+
+	/**
+	 * @returns {Obj} xy-coordinate pair of a nearby food cell.
+	*/
+	Bacteria.prototype.senseFood = function () {
+		// By getting adjacent food from one cell north,
+		// south, east, and west of our current location,
+		// we effectively search radially outward. This
+		// does search some cells mutiple times, but the
+		// performance differences should be unnoticable.
+		var north = environment.getAdjacent({ x: this.x, y: this.y + 1 }).food;
+		var south = environment.getAdjacent({ x: this.x, y: this.y - 1 }).food;
+		var east = environment.getAdjacent({ x: this.x + 1, y: this.y }).food;
+		var west = environment.getAdjacent({ x: this.x - 1, y: this.y }).food;
+		var nearbyFood = north.concat(south, east, west);
+
+		if (nearbyFood.length) return nearbyFood[0];
+		else return null;
 	};
 })();

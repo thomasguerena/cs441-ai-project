@@ -265,13 +265,20 @@
 		var bl = this.bacteriaList.slice(); // create copy
 		var blength = bl.length;
 		for (var i = 0; i < blength; ++i) {
-			if (bl[i]) {
-				if (bl[i].update() == false) {
-					this.remove(this.bacteriaList[i]);
-				}
-			}
+			if (bl[i]) bl[i].update();
 		}
 	};
+
+	Environment.prototype.updateFood = function () {
+
+		// TODO - add food generation
+
+		var fl = this.foodList.slice(); // create copy
+		var flength = fl.length;
+		for (var i = 0; i < flength; ++i) {
+			if (fl[i]) fl[i].update();
+		}
+	}
 
 	Environment.prototype.replicateBacteria = function () {
 		// var bl = this.bacteriaList.slice(); // create copy

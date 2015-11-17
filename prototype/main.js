@@ -94,6 +94,7 @@
 		environment.dissolveAntibiotic();
 		environment.resolveChallenges();
 		environment.updateBacteria();
+		environment.updateFood();
 
 		this.report();
 		canvas.render();
