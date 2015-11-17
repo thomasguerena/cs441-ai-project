@@ -9,13 +9,19 @@
 	};
 
     /* @description Decides whether or not it kills
-     *   a bacteria. If it doesn't this antibiotic
-     *   will be wiped out.
+     *   a bacteria cell. If it doesn't kill the cell,
+     *   this antibiotic will be destroyed.
+     * @oaram {Bacteria} cell
      * @returns {Boolean}
      *   True: It kills the bacteria.
      *   False: It does NOT kill the bacteria.
     */
-	Antibiotic.prototype.kill = function(cell) {
-		return Math.random() < this.potency/100;
+	Antibiotic.prototype.kills = function(cell) {
+		if (cell.diversity < this.potency) {
+            this.destroy();
+            return false;
+        } else {
+            return true;
+        }
 	};
 })();

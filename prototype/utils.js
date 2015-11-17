@@ -52,4 +52,31 @@
 	    this.push(item);
 	    return true;
 	};
+
+	/**
+	 * @description Get the HTML5 canvas-relative xy-coordinates
+	 *   of a mouse. This function assumes there is an mouse-X event
+	 *   object to be provided. If not, fake it..
+	 * @param {Canvas Object} c: The canvas in which the mouse is acting.
+	 * @param {DOM Event} e: The event object created by the mouse action.
+	 * @param {Boolean} normalize: Whether or not to convert the coordinates
+	 *   into canvas tile size-relative coordinates.
+	 * @returns {Object} Integer pair (x,y).
+	*/
+	window.getCanvasMousePosition = function (c, e, normalize) {
+		var b = c.getBoundingClientRect(); // canvas bounds
+		var tilesize = Math.floor(c.width/settings.environment.n);
+		var pos = {
+			x: Math.round((e.clientX-b.left)/(b.right-b.left)*c.width),
+			y: Math.round((e.clientY-b.top)/(b.bottom-b.top)*c.height)
+		};
+
+		if (!normalize) return pos;
+		else return {
+			x: Math.floor(pos.x / tilesize),
+			y: Math.floor(pos.y / tilesize)
+		};
+	};
+
+
 })();

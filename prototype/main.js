@@ -4,17 +4,17 @@
 	'use strict';
 
 	var Simulation = function () {
+		var that = this;
 		this.PAUSED = false;
-		this.environment = new Environment(16, 16);
-		this.canvas = document.querySelector('canvas');
-		this.ctx = this.canvas.getContext('2d');
-		this.ctx.textAlign = 'center';
-		this.ctx.font = '18px Helvetica';
+		window.environment = new Environment(16, 16);
 
-		window.generation = 0; // current generation - global
+		window.generation = 0; // current generation (global)
 
-		this.environment.populate(8, 3);
-		this.render();
+		canvas.on('click', function (e) {
+			that.canvasClickHandler(e);
+		});
+
+		canvas.render();
 		this.report();
 	};
 
@@ -31,66 +31,30 @@
 
 	Simulation.prototype.report = function () {
 		console.log('\n\nGeneration ' + generation + '\n');
-		console.log('Bacteria count: ' + this.environment.bacteriaCount);
-		console.log('Antibiotic count: ' + this.environment.antibioticCount);
-	}
+		console.log('Bacteria count: ' + environment.bacteriaCount);
+		console.log('Antibiotic count: ' + environment.antibioticCount);
+	};
 
-	Simulation.prototype.render = function (withText) {
-		var colors = {
-			text: '#FFFFFF',
-			bacteria: '#CCDC00',
-			antibiotic: '#F24405',
-			challenge: '#F28705'
-		};
-		var tilesize = Math.floor(this.canvas.width/this.environment.n);
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		for (var i = 0; i < this.environment.n; ++i) {
-			for (var j = 0; j < this.environment.m; ++j) {
-				var cx = tilesize*i;
-				var cy = tilesize*j;
-				var tx = cx + tilesize/2;
-				var ty = (cy + tilesize/2) + 5;
-				var ai = this.environment.antibioticMatrix[i][j];
-				var bi = this.environment.bacteriaMatrix[i][j];
-				this.ctx.globalAlpha = 1;
-
-				if (ai >= 0 && bi >= 0) {
-				 	var psurvival = 1 - this.environment.antibioticList[ai].potency/100;
-				 	this.ctx.fillStyle = colors.challenge;
-					this.ctx.fillRect(cx, cy, tilesize, tilesize);
-					if (withText) {
-						this.ctx.fillStyle = colors.text;
-						this.ctx.fillText(psurvival, tx, ty);
-					}
-				} else if (ai >= 0) {
-					var potency = this.environment.antibioticList[ai].potency;
-					this.ctx.globalAlpha = potency/100;
-					this.ctx.fillStyle = colors.antibiotic;
-					this.ctx.fillRect(cx, cy, tilesize, tilesize);
-					if (withText) {
-						this.ctx.globalAlpha = 1;
-						this.ctx.fillStyle = colors.text;
-						this.ctx.fillText(potency, tx, ty);
-					}
-				} else if (bi >= 0) {
-					var dna = this.environment.bacteriaList[bi].dna;
-					this.ctx.fillStyle = colors.bacteria;
-					this.ctx.fillRect(cx, cy, tilesize, tilesize);
-					if (withText) {
-						this.ctx.fillStyle = colors.text;
-						this.ctx.fillText(dna, tx, ty);
-					}
-				}
-			}
+	Simulation.prototype.canvasClickHandler = function (e) {
+		var pos = getCanvasMousePosition(canvas.canvas, e, true);
+		if (settings.simulation.spawnbrush == 'bacteria') {
+			environment.add(new Bacteria(pos.x, pos.y));
 		}
+		else if (settings.simulation.spawnbrush == 'antibiotic') {
+			environment.add(new Antibiotic(pos.x, pos.y));
+		}
+		else {
+			environment.add(new Food(pos.x, pos.y));
+		}
+		canvas.render();
 	};
 
 	Simulation.prototype.checkSuccess = function () {
-		return this.environment.antibioticCount == 0;
+		return environment.antibioticCount == 0;
 	};
 
 	Simulation.prototype.checkFailure = function () {
-		return this.environment.bacteriaCount == 0;
+		return environment.bacteriaCount == 0;
 	};
 
 	Simulation.prototype.loop = function (speed) {
@@ -126,13 +90,13 @@
 		// Next generation
 		generation += 1;
 
-		this.environment.spreadAntibiotic();
-		this.environment.dissolveAntibiotic();
-		this.environment.resolveChallenges();
-		this.environment.updateBacteria();
+		environment.spreadAntibiotic();
+		environment.dissolveAntibiotic();
+		environment.resolveChallenges();
+		environment.updateBacteria();
 
 		this.report();
-		this.render(false);
+		canvas.render();
 	};
 
 	window.sim = new Simulation();
