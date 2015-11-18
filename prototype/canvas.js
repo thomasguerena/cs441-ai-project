@@ -58,7 +58,7 @@
 					}
 				} else if (ai >= 0) {
 					var potency = environment.antibioticList[ai].potency;
-					this.ctx.globalAlpha = potency/100;
+					this.ctx.globalAlpha = potency/settings.antibiotic.potency;
 					this.ctx.fillStyle = this.colors.antibiotic;
 					this.ctx.fillRect(cx, cy, this.tilesize, this.tilesize);
 					if (DEBUGGING) {

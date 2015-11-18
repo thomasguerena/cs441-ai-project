@@ -50,13 +50,12 @@
 	};
 
 	Simulation.prototype.checkSuccess = function () {
-		return false; // TODO
-		// return environment.antibioticCount == 0;
+		return environment.antibioticCount == 0
+			&& generation > settings.antibiotic.genx;
 	};
 
 	Simulation.prototype.checkFailure = function () {
-		return false; // TODO
-		// return environment.bacteriaCount == 0;
+		return environment.bacteriaCount == 0;
 	};
 
 	Simulation.prototype.loop = function (speed) {
@@ -92,9 +91,7 @@
 		// Next generation
 		generation += 1;
 
-		environment.spreadAntibiotic();
-		environment.dissolveAntibiotic();
-		environment.resolveChallenges();
+		environment.updateAntibiotic();
 		environment.updateBacteria();
 		environment.updateFood();
 

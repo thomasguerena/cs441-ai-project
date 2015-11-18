@@ -15,7 +15,9 @@
 
 		// Default Antibiotic Settings
 		antibiotic: {
-			emergence: 100
+			genx: 5,
+			potency: 150,
+			diffusal: 20
 		},
 
 		// Default Bacteria Settings

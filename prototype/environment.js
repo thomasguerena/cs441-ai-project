@@ -230,35 +230,13 @@
 	//   not reached a minimum density. This is calculated using the number of
 	//   additional cells occupied by antibiotic each generation.
 	//   See variable: this.antibioticDiffusion
-	Environment.prototype.spreadAntibiotic = function () {
-		if (this.antibioticDiffusion == 0) return; // reached minimum density
-		if (generation < settings.antibiotic.emergence) return; // intro gen
-		if (generation % 5 !== 0) return; // throttle the rate of diffusion
-
-		var spreading = this.antibioticList.slice(); // create copy
-		var numSpread = 0;
-		for (var i = 0; i < spreading.length; ++i) {
-			if (spreading[i] && spreading[i].diffused == false) {
-				var emptyAdj = this.getEmptyAdjacent(spreading[i]).antibiotic;
-				for (var j = 0; j < emptyAdj.length; ++j) {
-					var p = Math.max(spreading[i].potency - 20, 0);
-					if (p > 0) {
-						spreading[i].diffused = true;
-						this.add(new Antibiotic(
-							emptyAdj[j].x,
-							emptyAdj[j].y,
-							p
-						));
-						++numSpread;
-					}
-				}
-			}
+	Environment.prototype.updateAntibiotic = function () {
+		var al = this.antibioticList.slice(); // create copy
+		var alength = al.length;
+		for (var i = 0; i < alength; ++i) {
+			if (al[i]) al[i].spread();
 		}
-		this.antibioticDiffusion = numSpread;
-	};
-
-	Environment.prototype.dissolveAntibiotic = function () {
-		// TODO
+		this.resolveChallenges();
 	};
 
 	Environment.prototype.updateBacteria = function () {
@@ -278,28 +256,6 @@
 		for (var i = 0; i < flength; ++i) {
 			if (fl[i]) fl[i].update();
 		}
-	}
-
-	Environment.prototype.replicateBacteria = function () {
-		// var bl = this.bacteriaList.slice(); // create copy
-		// for (var i = 0; i < bl.length; ++i) {
-		// 	if (bl[i] != null) {
-		// 		var replicate = Number(bl[i].dna[1]);
-		// 		var decision = 0;
-		// 		var emptyAdj = this.getEmptyAdjacent(bl[i]).bacteria;
-		// 		var adjAntibiotic = this.getAdjacent(bl[i]).antibiotic;
-		// 		var availableIndex = replicate % emptyAdj.length;
-		// 		availableIndex = (availableIndex + adjAntibiotic.length) % emptyAdj.length;
-		// 		decision = emptyAdj[availableIndex];
-
-		// 		if (emptyAdj.length == 0) return;
-		// 		if (bl[i].x != decision.x && bl[i].y != decision.y) {
-		// 			bl[i].x = decision.x;
-		// 			bl[i].y = decision.y;
-		// 			this.add(new Bacteria(bl[i].x, bl[i].y, bl[i].dna));
-		// 		}
-		// 	}
-		// }
 	};
 
 	Environment.prototype.resolveChallenges = function () {

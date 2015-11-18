@@ -49,15 +49,12 @@
 
 		// Consider possible actions
 		if (this.energy < settings.bacteria.thresholds.lower) {
-			console.log('Goal = ' + settings.bacteria.priorities.first); //rmv
 			this.actions[settings.bacteria.priorities.first]();
 		}
 		else if (this.energy < settings.bacteria.thresholds.upper) {
-			console.log('Goal = ' + settings.bacteria.priorities.second); //rmv
 			this.actions[settings.bacteria.priorities.second]();
 		}
 		else {
-			console.log('Goal = ' + settings.bacteria.priorities.third); //rmv
 			this.actions[settings.bacteria.priorities.third]();
 		}
 
@@ -104,9 +101,6 @@
 		var nearbyFood = null;
 
 		if (adjFood.length == 0) {
-
-			console.log('Searching for food...');
-
 			this.move();
 			nearbyFood = this.senseFood();
 			if (nearbyFood) {
@@ -114,7 +108,6 @@
 				this.heading.y = nearbyFood.y > this.y ? 1 : -1;
 			}
 		} else {
-			console.log('Eating!'); //rmv
 			this.energy += adjFood[0].munch();
 		}
 	};
@@ -128,7 +121,6 @@
 		adjBacteria = environment.getAdjacent(this).bacteria;
 
 		if (adjBacteria.length > 0) {
-			console.log('Mating!'); //rmv
 			this.energy -= settings.bacteria.cost.mate;
 			this.diversity += 10; // TODO - maybe this should depend on the other's diversity
 		}
@@ -148,9 +140,6 @@
 		emptyAdj = environment.getEmptyAdjacent(this).bacteria;
 
 		if (emptyAdj.length > 0) {
-
-			console.log('Replicating!'); //rmv
-
 			var i = Math.floor(Math.random()*emptyAdj.length);
 			rx = emptyAdj[i].x;
 			ry = emptyAdj[i].y;
