@@ -1,129 +1,177 @@
 (function () {
 	'use strict';
 
-	/*-- Bacteria --*/
-	window.Bacteria = function () {
-		this.cells = [];
-		this.matrix = new Matrix(80, 80, this.cells);
-		this.numCellsAllTime = 0;
+	window.Bacteria = function (x, y, diversity) {
 
-		// DEBUGGING - remove
-		window.matrix = this.matrix;
-		window.cells = this.cells;
-	};
-
-	Bacteria.prototype.addCell = function (x, y, dna, fitness) {
-		var cid = ++this.numCellsAllTime;
-		var cx = x || this.matrix.boundX(Math.floor(Math.random()*100)); // TODO
-		var cy = y || this.matrix.boundY(Math.floor(Math.random()*100)); // TODO - avoid collisions
-
-		// Duplicate protection
-		if (this.matrix.m[cx][cy] === null) {
-			this.cells.push(new Cell(cid, cx, cy, dna, fitness));
-			this.matrix.addCell(this.cells[this.cells.length - 1]);
+		var that = this;
+		this.age = 0; // number of generations survived
+		this.energy = settings.bacteria.energy;
+		this.diversity = diversity > -1 ? diversity : 0;
+		this.actions = { // goal-oriented functions stored by goal
+			food: function () { that.eat(); }, // search for food, eat food
+			mate: function () { that.mate(); }, // search for mate, mate
+			replicate: function () { that.replicate(); } // replication
+		};
+		this.goal = 1; // default to first priority
+		// FIXME - doesn't handle collisions
+		this.x = x > -1 ? x : Math.floor(Math.random()*environment.n);
+		this.y = y > -1 ? y : Math.floor(Math.random()*environment.n);
+		this.heading = { x: 0, y: 0 };
+		while (this.heading.x == 0 && this.heading.y == 0) {
+			// Random headings are fine so long as food can be detected within
+			// some non-adjacent proximity.
+			this.heading = {
+				x: Math.random() > 0.5 ? -Math.round(Math.random()) : Math.round(Math.random()),
+				y: Math.random() > 0.5 ? -Math.round(Math.random()) : Math.round(Math.random())
+			};
 		}
 	};
 
-	Bacteria.prototype.populate = function (n) {
-		for (var i = 0; i < n; ++i) {
-			this.addCell();
+	Bacteria.prototype.yieldGoal = function () {
+		++this.goal;
+		if (this.goal == 2) {
+			this.actions[settings.bacteria.priorities.second]();
+		}
+		else if (this.goal == 3) {
+			this.actions[settings.bacteria.priorities.third]();
 		}
 	};
 
-	Bacteria.prototype.replicateCell = function (cell) {
-		var coords = this.matrix.getEmptyAdjacent(cell);
-		if (coords.x < 0 || coords.y < 0) return;
-		this.addCell(coords.x, coords.y, cell.dna, cell.fitness);
+	Bacteria.prototype.resetGoal = function () {
+		this.goal = 1;
+	};
+
+	Bacteria.prototype.update = function () {
+
+		this.age += 1; // age one generation
+		this.resetGoal(); // reset actions to default
+		this.mutate(); // potentially mutate
+
+		// Consider possible actions
+		if (this.energy < settings.bacteria.thresholds.lower) {
+			this.actions[settings.bacteria.priorities.first]();
+		}
+		else if (this.energy < settings.bacteria.thresholds.upper) {
+			this.actions[settings.bacteria.priorities.second]();
+		}
+		else {
+			this.actions[settings.bacteria.priorities.third]();
+		}
+
+		if (this.energy < 1) environment.remove(this);
+	};
+
+	Bacteria.prototype.move = function () {
+		var that = this;
+		var emptyAdj = null;
+		var availableMoves = null;
+
+		if (this.energy < settings.bacteria.cost.move) this.yieldGoal();
+
+		emptyAdj = environment.getEmptyAdjacent(this);
+		availableMoves = emptyAdj.bacteria.intersect(emptyAdj.food,
+			function (a, b) {
+				return a.x == b.x && a.y == b.y;
+		});
+
+		if (availableMoves.length > 0) {
+			environment.remove(this);
+
+			if (!availableMoves.find(function (avail) {
+				return avail.x == that.x + that.heading.x
+					&& avail.y == that.y + that.heading.y;
+			})) {
+				var r = Math.floor(Math.random()*availableMoves.length);
+				this.x = availableMoves[r].x;
+				this.y = availableMoves[r].y;
+			} else {
+				this.x += this.heading.x;
+				this.y += this.heading.y;
+			}
+			this.energy -= settings.bacteria.cost.move;
+			environment.add(this);
+		} else {
+			this.yieldGoal();
+		}
+	}
+
+	Bacteria.prototype.eat = function () {
+
+		var adjFood = environment.getAdjacent(this).food;
+		var nearbyFood = null;
+
+		if (adjFood.length == 0) {
+			this.move();
+			nearbyFood = this.senseFood();
+			if (nearbyFood) {
+				this.heading.x = nearbyFood.x > this.x ? 1 : -1;
+				this.heading.y = nearbyFood.y > this.y ? 1 : -1;
+			}
+		} else {
+			this.energy += adjFood[0].munch();
+		}
+	};
+
+	Bacteria.prototype.mate = function (potentialMates) {
+
+		var adjBacteria = null;
+
+		if (this.energy < settings.bacteria.cost.mate) this.yieldGoal();
+
+		adjBacteria = environment.getAdjacent(this).bacteria;
+
+		if (adjBacteria.length > 0) {
+			this.energy -= settings.bacteria.cost.mate;
+			this.diversity += 10; // TODO - maybe this should depend on the other's diversity
+		}
+		else {
+			this.yieldGoal();
+		}
+	};
+
+	Bacteria.prototype.replicate = function () {
+		var rx = -1;
+		var ry = -1;
+		var rd = this.diversity;
+		var emptyAdj = null;
+
+		if (this.energy < settings.bacteria.cost.replicate) this.yieldGoal();
+
+		emptyAdj = environment.getEmptyAdjacent(this).bacteria;
+
+		if (emptyAdj.length > 0) {
+			var i = Math.floor(Math.random()*emptyAdj.length);
+			rx = emptyAdj[i].x;
+			ry = emptyAdj[i].y;
+			environment.add(new Bacteria(rx, ry, rd));
+			this.energy -= settings.bacteria.cost.replicate;
+		} else {
+			this.yieldGoal();
+		}
 	};
 
 	Bacteria.prototype.mutate = function () {
-		// Anneal number of mutant cells
-		var anValue = 10 + Math.floor(generation/10);
-		var mutants = Math.floor(Math.random()*(this.cells.length)/anValue);
-		for (var i = 0; i < mutants; ++i) {
-			var mutant = Math.floor(Math.random()*this.cells.length);
-			this.cells[mutant].mutate();
+		if (Math.floor(Math.random()*100) < settings.bacteria.mutationRate) {
+			this.diversity += settings.bacteria.mutationStep;
 		}
 	};
 
-	Bacteria.prototype.horizontalGeneTransfer = function (remaining) {
-		remaining = remaining || this.cells.slice(); // create copy
-		var cell = remaining.shift(); // cannot mate with self
-		var neighbors = this.matrix.getAdjacent(cell); // get potential mates
-		neighbors = removeCellsFromList(remaining, neighbors); // only unmated cells
-		var selected = cell.mate(neighbors, remaining);  // get chosen mate
-		selected = selected || { cid: -1 }; // provide dummy cell if no mate was selected
-		remaining = removeCellsFromList(selected, remaining); // selected cells can't mate again
+	/**
+	 * @returns {Obj} xy-coordinate pair of a nearby food cell.
+	*/
+	Bacteria.prototype.senseFood = function () {
+		// By getting adjacent food from one cell north,
+		// south, east, and west of our current location,
+		// we effectively search radially outward. This
+		// does search some cells mutiple times, but the
+		// performance differences should be unnoticable.
+		var north = environment.getAdjacent({ x: this.x, y: this.y + 1 }).food;
+		var south = environment.getAdjacent({ x: this.x, y: this.y - 1 }).food;
+		var east = environment.getAdjacent({ x: this.x + 1, y: this.y }).food;
+		var west = environment.getAdjacent({ x: this.x - 1, y: this.y }).food;
+		var nearbyFood = north.concat(south, east, west);
 
-		if (remaining.length > 1) {
-			this.horizontalGeneTransfer(remaining);
-		}
-	};
-
-	Bacteria.prototype.kill = function (cell) {
-		this.matrix.removeCell(cell);
-		for (var i = 0; i < this.cells.length; ++i) {
-			if (this.cells[i].cid === cell.cid) {
-				this.cells.splice(i, 1);
-				return;
-			}
-		}
-	};
-
-
-	/*-- Cell --*/
-	var Cell = function (cid, x, y, dna, fitness) {
-		this.cid = cid;
-		this.x = x || 0;
-		this.y = y || 0;
-		this.fitness = fitness || 1;
-		this.dna = dna || (function() {
-			var code = '';
-			while (code.length < 3) {
-				code += hexc.charAt(Math.floor(Math.random() * hexc.length));
-			}
-			return code;
-		})();
-	};
-
-	Cell.prototype.mutate = function () {
-		// Each gene has a 40% chance to mutate.
-		var chanceToMutate = 0.4;
-		for (var i = 0; i < this.dna.length; ++i) {
-			if (Math.random() <= chanceToMutate) {
-				this.shiftGene(i);
-			}
-		}
-	};
-
-	Cell.prototype.shiftGene = function (index) {
-		// Anneal mutation step
-		// TODO - should min be 1?
-		var variance = Math.max(0, 15 - Math.floor(generation/10));
-		var c = hexToStr((strToHex(this.dna.charAt(index)) + variance)%16);
-		this.dna = this.dna.substr(0, index) + c + this.dna.substr(index + 1);
-	};
-
-	Cell.prototype.survives = function () {
-		return Math.random() <= this.fitness;
-	};
-
-	Cell.prototype.mate = function (potentialMates) {
-		if (potentialMates.length === 0) return null;
-
-		// TODO - add modular method for selecting mate
-
-		var selected = { fitness: 0 }; // dummy cell
-		var dna1, dna2;
-		for (var i = 0; i < potentialMates.length; ++i) {
-			if (potentialMates[i].fitness > selected.fitness) {
-				selected = potentialMates[i];
-			}
-		}
-
-		dna1 = this.dna[0] + selected.dna[1] + selected.dna[2];
-		dna2 = selected.dna[0] + this.dna[1] + this.dna[2];
-		this.dna = dna1;
-		selected.dna = dna2;
+		if (nearbyFood.length) return nearbyFood[0];
+		else return null;
 	};
 })();

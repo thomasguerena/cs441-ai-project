@@ -1,19 +1,6 @@
 (function () {
 	'use strict';
 
-	// Valid hex digits
-	window.hexc = '0123456789abcdef';
-
-	// Convert hex number to hex string
-	window.hexToStr = function (num) {
-		return num.toString(16);
-	};
-
-	// Convert hex string to hex number
-	window.strToHex = function (str) {
-		return parseInt(str, 16);
-	};
-
 	// Shuffle array using Knuth Shuffle method
 	window.knuthShuffle = function (l) {
 		var i = l.length, t, ri;
@@ -27,22 +14,6 @@
 		return l;
 	};
 
-	// Reduce hex color string from 6-digit to 3
-	window.reduceHex = function (str) {
-		str = str[0] == '#' ? str.slice(1, str.length) : str;
-		return str[0] + str[2] + str[4];
-	};
-
-	// Expand hex color string from 3-digit to 6
-	window.expandHex = function (str) {
-		var result = '#';
-		str = str[0] == '#' ? str.slice(1, str.length) : str;
-		for (var i = 0; i < str.length; ++i) {
-			result += str[i] + str[i];
-		}
-		return result;
-	};
-
 	window.removeCellsFromList = function (cells, list) {
 		if (!(cells instanceof Array)) cells = [cells];
 
@@ -54,4 +25,90 @@
 		}
 		return list;
 	};
+
+	/* @description Only push the item if it does not exist
+	 * already in the array. Duplicates are identified using
+	 * the comparison function parameter.
+	 *
+	 * @param {any} item: The element to be pushed onto the array.
+	 * @param {function} compare: Function which accepts two items
+	 *   from the array and returns true when they match, and false
+	 *   otherwise. The first parameter will always be the item which
+	 *   is being added to the array.
+	 *
+	 * @returns {Boolean}
+	 *   true: The item was added to the array.
+	 *   false: The item was NOT added to the array.
+	*/
+	Array.prototype.pushUnique = function (item, compare) {
+	    if (typeof item == undefined) return false;
+	    if (typeof compare != 'function') {
+	    	console.error('Invalid comparison function');
+	    	return false;
+	    }
+	    for (var i = 0; i < this.length; ++i) {
+	        if (compare(item, this[i]) === true) return false;
+	    }
+	    this.push(item);
+	    return true;
+	};
+
+	/* @description Create a new array containing all the elements
+	 * similar between the two arrays. Similar elements are identified
+	 * using the comparison function parameter.
+	 *
+	 * @param {Array} array: The Array object with which to intersect.
+	 * @param {Function} compare: Function which accepts two elements,
+	 *   one from each array. It must return true when they are similar,
+	 *   and false otherwise.
+	 *
+	 * @returns {Boolean}
+	 *   true: The item was added to the array.
+	 *   false: The item was NOT added to the array.
+	*/
+	Array.prototype.intersect = function (array, compare) {
+		if (typeof array == undefined) return [];
+		if (typeof compare != 'function') {
+			console.error('Invalid comparison function');
+			return [];
+		}
+	    var intersect = [];
+	    var a = this.length < array.length ? this : array;
+	    var b = this.length < array.length ? array : this;
+	    for (var i = 0; i < a.length; ++i) {
+	        for (var j = 0; j < b.length; ++j) {
+	            if (compare(a[i], b[j]) == true) {
+	                intersect.push(a[i]);
+	            }
+	        }
+	    }
+	    return intersect;
+	};
+
+	/**
+	 * @description Get the HTML5 canvas-relative xy-coordinates
+	 *   of a mouse. This function assumes there is an mouse-X event
+	 *   object to be provided. If not, fake it..
+	 * @param {Canvas Object} c: The canvas in which the mouse is acting.
+	 * @param {DOM Event} e: The event object created by the mouse action.
+	 * @param {Boolean} normalize: Whether or not to convert the coordinates
+	 *   into canvas tile size-relative coordinates.
+	 * @returns {Object} Integer pair (x,y).
+	*/
+	window.getCanvasMousePosition = function (c, e, normalize) {
+		var b = c.getBoundingClientRect(); // canvas bounds
+		var tilesize = Math.floor(c.width/settings.environment.n);
+		var pos = {
+			x: Math.round((e.clientX-b.left)/(b.right-b.left)*c.width),
+			y: Math.round((e.clientY-b.top)/(b.bottom-b.top)*c.height)
+		};
+
+		if (!normalize) return pos;
+		else return {
+			x: Math.floor(pos.x / tilesize),
+			y: Math.floor(pos.y / tilesize)
+		};
+	};
+
+
 })();
