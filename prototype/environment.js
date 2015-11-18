@@ -85,7 +85,7 @@
 			matrix = this.foodMatrix;
 		}
 
-		if (matrix[x][y] < 0) {
+		if (matrix[x][y] < 0 && this.foodMatrix[x][y] < 0) {
 			for (var i = 0; i < list.length; ++i) {
 				if (list[i] == null) {
 					list[i] = toAdd;

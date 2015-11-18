@@ -50,11 +50,13 @@
 	};
 
 	Simulation.prototype.checkSuccess = function () {
-		return environment.antibioticCount == 0;
+		return false; // TODO
+		// return environment.antibioticCount == 0;
 	};
 
 	Simulation.prototype.checkFailure = function () {
-		return environment.bacteriaCount == 0;
+		return false; // TODO
+		// return environment.bacteriaCount == 0;
 	};
 
 	Simulation.prototype.loop = function (speed) {

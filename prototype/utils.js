@@ -53,6 +53,38 @@
 	    return true;
 	};
 
+	/* @description Create a new array containing all the elements
+	 * similar between the two arrays. Similar elements are identified
+	 * using the comparison function parameter.
+	 *
+	 * @param {Array} array: The Array object with which to intersect.
+	 * @param {Function} compare: Function which accepts two elements,
+	 *   one from each array. It must return true when they are similar,
+	 *   and false otherwise.
+	 *
+	 * @returns {Boolean}
+	 *   true: The item was added to the array.
+	 *   false: The item was NOT added to the array.
+	*/
+	Array.prototype.intersect = function (array, compare) {
+		if (typeof array == undefined) return [];
+		if (typeof compare != 'function') {
+			console.error('Invalid comparison function');
+			return [];
+		}
+	    var intersect = [];
+	    var a = this.length < array.length ? this : array;
+	    var b = this.length < array.length ? array : this;
+	    for (var i = 0; i < a.length; ++i) {
+	        for (var j = 0; j < b.length; ++j) {
+	            if (compare(a[i], b[j]) == true) {
+	                intersect.push(a[i]);
+	            }
+	        }
+	    }
+	    return intersect;
+	};
+
 	/**
 	 * @description Get the HTML5 canvas-relative xy-coordinates
 	 *   of a mouse. This function assumes there is an mouse-X event

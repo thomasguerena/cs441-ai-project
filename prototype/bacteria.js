@@ -12,6 +12,7 @@
 			mate: function () { that.mate(); }, // search for mate, mate
 			replicate: function () { that.replicate(); } // replication
 		};
+		this.goal = 1; // default to first priority
 		// FIXME - doesn't handle collisions
 		this.x = x > -1 ? x : Math.floor(Math.random()*environment.n);
 		this.y = y > -1 ? y : Math.floor(Math.random()*environment.n);
@@ -26,23 +27,37 @@
 		}
 	};
 
+	Bacteria.prototype.yieldGoal = function () {
+		++this.goal;
+		if (this.goal == 2) {
+			this.actions[settings.bacteria.priorities.second]();
+		}
+		else if (this.goal == 3) {
+			this.actions[settings.bacteria.priorities.third]();
+		}
+	};
+
+	Bacteria.prototype.resetGoal = function () {
+		this.goal = 1;
+	};
+
 	Bacteria.prototype.update = function () {
 
 		this.age += 1; // age one generation
-
+		this.resetGoal(); // reset actions to default
 		this.mutate(); // potentially mutate
 
 		// Consider possible actions
 		if (this.energy < settings.bacteria.thresholds.lower) {
-			console.log('Goal: ' + settings.bacteria.priorities.first); //rmv
+			console.log('Goal = ' + settings.bacteria.priorities.first); //rmv
 			this.actions[settings.bacteria.priorities.first]();
 		}
 		else if (this.energy < settings.bacteria.thresholds.upper) {
-			console.log('Goal: ' + settings.bacteria.priorities.second); //rmv
+			console.log('Goal = ' + settings.bacteria.priorities.second); //rmv
 			this.actions[settings.bacteria.priorities.second]();
 		}
 		else {
-			console.log('Goal: ' + settings.bacteria.priorities.third); //rmv
+			console.log('Goal = ' + settings.bacteria.priorities.third); //rmv
 			this.actions[settings.bacteria.priorities.third]();
 		}
 
@@ -50,19 +65,36 @@
 	};
 
 	Bacteria.prototype.move = function () {
+		var that = this;
+		var emptyAdj = null;
+		var availableMoves = null;
 
-		var COST = 1;
-		var emptyAdj = environment.getEmptyAdjacent(this).bacteria;
+		if (this.energy < settings.bacteria.cost.move) this.yieldGoal();
 
-		if (emptyAdj.length > 0) {
+		emptyAdj = environment.getEmptyAdjacent(this);
+		availableMoves = emptyAdj.bacteria.intersect(emptyAdj.food,
+			function (a, b) {
+				return a.x == b.x && a.y == b.y;
+		});
+
+		if (availableMoves.length > 0) {
 			environment.remove(this);
-			this.x += this.heading.x;
-			this.y += this.heading.y;
-			this.energy -= COST;
+
+			if (!availableMoves.find(function (avail) {
+				return avail.x == that.x + that.heading.x
+					&& avail.y == that.y + that.heading.y;
+			})) {
+				var r = Math.floor(Math.random()*availableMoves.length);
+				this.x = availableMoves[r].x;
+				this.y = availableMoves[r].y;
+			} else {
+				this.x += this.heading.x;
+				this.y += this.heading.y;
+			}
+			this.energy -= settings.bacteria.cost.move;
 			environment.add(this);
 		} else {
-			// TODO - yield action
-			console.log('Cannot move...'); //rmv
+			this.yieldGoal();
 		}
 	}
 
@@ -72,6 +104,9 @@
 		var nearbyFood = null;
 
 		if (adjFood.length == 0) {
+
+			console.log('Searching for food...');
+
 			this.move();
 			nearbyFood = this.senseFood();
 			if (nearbyFood) {
@@ -79,50 +114,50 @@
 				this.heading.y = nearbyFood.y > this.y ? 1 : -1;
 			}
 		} else {
+			console.log('Eating!'); //rmv
 			this.energy += adjFood[0].munch();
 		}
 	};
 
 	Bacteria.prototype.mate = function (potentialMates) {
 
-		console.log('mate!'); //rmv
+		var adjBacteria = null;
 
-		// TODO - this is old code from environment
+		if (this.energy < settings.bacteria.cost.mate) this.yieldGoal();
 
-		// if (potentialMates.length === 0) return null;
-		// var selected = { fitness: 0 }; // dummy cell
-		// var dna1, dna2;
-		// for (var i = 0; i < potentialMates.length; ++i) {
-		// 	if (potentialMates[i].fitness > selected.fitness) {
-		// 		selected = potentialMates[i];
-		// 	}
-		// }
+		adjBacteria = environment.getAdjacent(this).bacteria;
 
-		// dna1 = this.dna[0] + selected.dna[1] + selected.dna[2];
-		// dna2 = selected.dna[0] + this.dna[1] + this.dna[2];
-		// this.dna = dna1;
-		// selected.dna = dna2;
+		if (adjBacteria.length > 0) {
+			console.log('Mating!'); //rmv
+			this.energy -= settings.bacteria.cost.mate;
+			this.diversity += 10; // TODO - maybe this should depend on the other's diversity
+		}
+		else {
+			this.yieldGoal();
+		}
 	};
 
 	Bacteria.prototype.replicate = function () {
-
-		console.log('replicate!'); //rmv
-
-		var COST = 35; // energy cost of replication
 		var rx = -1;
 		var ry = -1;
 		var rd = this.diversity;
-		var emptyAdj = environment.getEmptyAdjacent(this).bacteria;
+		var emptyAdj = null;
+
+		if (this.energy < settings.bacteria.cost.replicate) this.yieldGoal();
+
+		emptyAdj = environment.getEmptyAdjacent(this).bacteria;
 
 		if (emptyAdj.length > 0) {
+
+			console.log('Replicating!'); //rmv
+
 			var i = Math.floor(Math.random()*emptyAdj.length);
 			rx = emptyAdj[i].x;
 			ry = emptyAdj[i].y;
 			environment.add(new Bacteria(rx, ry, rd));
-			this.energy -= COST;
+			this.energy -= settings.bacteria.cost.replicate;
 		} else {
-			// TODO - yield to a lower priority action?
-			console.log('Unable to replicate. Yield!'); //rmv
+			this.yieldGoal();
 		}
 	};
 

@@ -20,15 +20,19 @@
 
 		// Default Bacteria Settings
 		bacteria: {
-			energy: 20, // rmv
-			// energy: 50,
+			energy: 50,
 			thresholds: { lower: 33, upper: 66 },
 			priorities: {
-				first: 'food',
-				second: 'replicate',
-				third: 'mate'
+				first: 'mate',
+				second: 'food',
+				third: 'replicate'
 			},
-			mutationRate: 50, // %
+			cost: {
+				move: 1,
+				mate: 15,
+				replicate: 35
+			},
+			mutationRate: 5, // %
 			mutationStep: 10
 		},
 
