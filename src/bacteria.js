@@ -14,8 +14,8 @@
 		};
 		this.goal = 1; // default to first priority
 		// FIXME - doesn't handle collisions
-		this.x = x > -1 ? x : Math.floor(Math.random()*environment.n);
-		this.y = y > -1 ? y : Math.floor(Math.random()*environment.n);
+		this.x = x > -1 ? x : Math.floor(Math.random()*environment.w);
+		this.y = y > -1 ? y : Math.floor(Math.random()*environment.h);
 		this.heading = { x: 0, y: 0 };
 		while (this.heading.x == 0 && this.heading.y == 0) {
 			// Random headings are fine so long as food can be detected within

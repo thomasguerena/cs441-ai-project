@@ -25,6 +25,7 @@
                 availableSpread[i].y,
                 this.potency - settings.antibiotic.diffusal
             ));
+            this.diffused = true;
         }
     };
 

@@ -2,22 +2,93 @@
 <html>
 <head>
 	<title>AI Prototype</title>
+	<link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="style/main.css">
 </head>
 <body>
-	<canvas width="600px" height="600px" style="border: 4px solid black;"></canvas><br>
-	<!--  -->
 
-	<script type="text/javascript" src="src/settings.js"></script>
+	<div class="content-wrapper">
+		<h1>Bacteria Colony Cellular Automata</h1>
+		<div class="sidebar">
+			<h2>Spawn Entities</h2>
+			<div class="spawn-brush">bacteria</div>
+			<div class="spawn-brush">antibiotic</div>
+			<div class="spawn-brush">food</div>
+		</div>
+		<canvas width="600px" height="600px"></canvas><br>
+		<div class="progress-bar"><div></div><i class="fa fa-exclamation-triangle"></i></div>
+		<button onclick="sim.start(0)">start</button>
+		<button onclick="sim.stop()">stop</button>
+		<button onclick="sim.step()">step</button>
+		<div class="message-box">Generation 0</div>
+
+		<!-- ...a ridiculous list of adjustable parameters... -->
+
+		<h2 header>Settings</h2>
+
+		<h3>Bacteria</h3>
+		<div class="sim-parameter" id="energy">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Energy</b> - each bacteria will start with <span></span> energy.</p>
+		</div>
+		<div class="sim-parameter" id="mutationRate">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Mutation Rate</b> - bacteria have a <span></span> percent chance to mutate each generation.</p>
+		</div>
+		<div class="sim-parameter" id="mutationStep">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Mutation Step</b> - when bacteria mutate, they gain <span></span> genetic diversity.</p>
+		</div>
+
+		<h3>Antibiotic</h3>
+		<div class="sim-parameter" id="genx">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Doomsday</b> - the antibiotic will begin spreading at generation <span></span>.</p>
+		</div>
+		<div class="sim-parameter" id="potency">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="1000" step="1" value="0"/>
+			</div>
+			<p><b>Potency</b> - initial antibiotic strength is <span></span>, which reduces as it spreads.</p>
+		</div>
+		<div class="sim-parameter" id="diffusal">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Diffusal Rate</b> - reduce antibiotic potency by <span></span> when an antibiotic spreads into an adjacent cell.</p>
+		</div>
+		<h3>Food</h3>
+		<div class="sim-parameter" id="sustenance">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Sustenance</b> - each piece of food has <span></span> energy to offer bacteria.</p>
+		</div>
+		<div class="sim-parameter" id="regenerationRate">
+			<div class="slider-container">
+	  			<input type="range" min="1" max="100" step="1" value="1"/>
+			</div>
+			<p><b>Regeneration Rate</b> - a piece of food will enter the matrix every <span></span> generations.</p>
+		</div>
+	</div>
+
+
 	<script type="text/javascript" src="src/utils.js"></script>
+	<script type="text/javascript" src="src/settings.js"></script>
+	<script type="text/javascript" src="src/ui.js"></script>
 	<script type="text/javascript" src="src/canvas.js"></script>
 	<script type="text/javascript" src="src/food.js"></script>
 	<script type="text/javascript" src="src/antibiotic.js"></script>
 	<script type="text/javascript" src="src/bacteria.js"></script>
 	<script type="text/javascript" src="src/environment.js"></script>
 	<script type="text/javascript" src="src/main.js"></script>
-	<button onclick="sim.start(0)">start</button>
-	<button onclick="sim.stop()">stop</button>
-	<button onclick="sim.update()">step</button>
-	<br>
 </body>
 </html>

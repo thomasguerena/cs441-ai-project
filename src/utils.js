@@ -97,7 +97,8 @@
 	*/
 	window.getCanvasMousePosition = function (c, e, normalize) {
 		var b = c.getBoundingClientRect(); // canvas bounds
-		var tilesize = Math.floor(c.width/settings.environment.n);
+		var tilew = Math.floor(c.width/settings.environment.width);
+		var tileh = Math.floor(c.width/settings.environment.height);
 		var pos = {
 			x: Math.round((e.clientX-b.left)/(b.right-b.left)*c.width),
 			y: Math.round((e.clientY-b.top)/(b.bottom-b.top)*c.height)
@@ -105,10 +106,31 @@
 
 		if (!normalize) return pos;
 		else return {
-			x: Math.floor(pos.x / tilesize),
-			y: Math.floor(pos.y / tilesize)
+			x: Math.floor(pos.x / tilew),
+			y: Math.floor(pos.y / tileh)
 		};
 	};
 
+	/* ...because I don't want to include jQuery... */
+	window.hasClass = function (el, className) {
+		if (el.classList) return el.classList.contains(className);
+		else return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+	};
+	window.addClass = function (el, className) {
+		if (el.classList) el.classList.add(className);
+		else if (!hasClass(el, className)) el.className += " " + className;
+	};
+	window.removeClass = function (el, className) {
+		if (el.classList) el.classList.remove(className);
+		else if (hasClass(el, className)) {
+	  		var reg = new RegExp('(\\s|^)' + className + '(\\s|$)')
+	    	el.className=el.className.replace(reg, ' ')
+		}
+	};
+	window.eachEl = function (els, func) {
+		for (var i = 0; i < els.length; ++i) {
+			func(els[i]);
+		}
+	};
 
 })();

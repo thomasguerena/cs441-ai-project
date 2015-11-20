@@ -1,0 +1,135 @@
+@import 'reset';
+@import 'fonts';
+@import 'slider';
+
+/* COLORS */
+$color-background: #FCFEFB;
+$color-default-font: #2D2D2D;
+$color-highlighted-font: #ED5953;
+$color-light-grey: #DDDDDD;
+$color-red: #F25352;
+$color-food: #CD89D8;
+$color-bacteria: #CCDC00;
+$color-antibiotic: #F24405;
+
+
+* {
+	font-family: $font-regular;
+}
+
+body {
+	width: 100vw;
+	height: 100vh;
+	background: $color-background;
+}
+
+.content-wrapper {
+	position: absolute;
+	width: 960px;
+	height: auto;
+	top: 0;
+	left: 50%;
+	margin-left: -480px;
+}
+
+h1, h2 {
+	margin: 12px 0;
+
+	&[header] {
+		margin-top: 48px;
+		margin-bottom: 24px;
+	}
+}
+
+.sidebar {
+	position: absolute;
+	width: 300px;
+	height: 600px;
+	top: 70px;
+	right: 0;
+
+	.spawn-brush {
+		height: 50px;
+		width: 100%;
+		margin: 6px 0;
+		line-height: 50px;
+		text-align: center;
+		color: $color-background;
+		cursor: pointer;
+		box-sizing: border-box;
+
+		&:nth-of-type(1) { background: $color-bacteria; }
+		&:nth-of-type(2) { background: $color-antibiotic; }
+		&:nth-of-type(3) { background: $color-food; }
+
+		&.selected {
+			color: $color-default-font;
+			background: $color-background;
+			line-height: 42px;
+
+			&:nth-of-type(1) { border: 4px solid $color-bacteria; }
+			&:nth-of-type(2) { border: 4px solid $color-antibiotic; }
+			&:nth-of-type(3) { border: 4px solid $color-food; }
+		}
+	}
+}
+
+canvas {
+	border: 4px solid $color-default-font;
+	border-radius: 2px;
+	box-sizing: border-box;
+}
+
+.progress-bar {
+	position: relative;
+	height: 8px;
+	width: 585px;
+	margin: 8px 0 12px 0;
+	border-radius: 4px;
+	background: $color-light-grey;
+
+	div {
+		height: 100%;
+		width: 0;
+		border-radius: 4px;
+		background: $color-red;
+		transition: width 100ms ease;
+	}
+	i.fa {
+		position: absolute;
+		right: -20px;
+		top: -3px;
+		font-size: 15px;
+	}
+}
+
+button {
+	height: 40px;
+	width: 80px;
+	background: $color-default-font;
+	color: $color-background;
+	border: none;
+	outline: none;
+	border-radius: 2px;
+	font-size: 18px;
+	cursor: pointer;
+}
+
+.message-box {
+	display: inline-block;
+	margin-left: 12px;
+}
+
+.sim-parameter {
+	p {
+		display: inline-block;
+		margin: 6px 0 6px 20px;
+
+		span {
+			color: $color-highlighted-font;
+		}
+	}
+	.slider-container {
+		display: inline-block;
+	}
+}

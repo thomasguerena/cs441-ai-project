@@ -5,20 +5,18 @@
 
 	/* @description Manages all instances of bacteria and antibiotic
 	 *   in the simulation environment, analogous to a petri dish.
-	 * @param {integer} n Width of the environment matrix.
-	 * @param {integer} n Height of the environment matrix.
 	*/
-	window.Environment = function (n, m) {
+	window.Environment = function () {
 
 		// Default dimensions
-		this.n = n || 16;
-		this.m = m || 16;
+		this.w = settings.environment.width;
+		this.h = settings.environment.height;
 
 		// Fixed-length arrays containing bacteria
 		//   antibiotic, and food objects, respectively.
-		this.bacteriaList = new Array(n*m);
-		this.antibioticList = new Array(n*m);
-		this.foodList = new Array(n*m);
+		this.bacteriaList = new Array(this.w*this.h);
+		this.antibioticList = new Array(this.w*this.h);
+		this.foodList = new Array(this.w*this.h);
 
 		// Integer matrices holding the index at which
 		//   the bacteria, antibiotic, or food can be
@@ -36,11 +34,11 @@
 		this.antibioticDiffusion = 1; // arbitrary non-zero initial value
 
 		// Construct matrices
-		for (var i = 0; i < n; ++i) {
+		for (var i = 0; i < this.w; ++i) {
 			this.bacteriaMatrix.push([]);
 			this.antibioticMatrix.push([]);
 			this.foodMatrix.push([]);
-			for (var j = 0; j < m; ++j) {
+			for (var j = 0; j < this.h; ++j) {
 				// Matrix cell values less than 0 indicate
 				//   that the cell is vacant.
 				this.bacteriaMatrix[i].push(-1);
@@ -53,11 +51,11 @@
 	/*-- Matrix functions --*/
 
 	Environment.prototype.boundX = function (x) {
-		return ((x%this.n)+this.n)%this.n; // allow negative numbers
+		return ((x%this.w)+this.w)%this.w; // allow negative numbers
 	};
 
 	Environment.prototype.boundY = function (y) {
-		return ((y%this.m)+this.m)%this.m; // allow negative numbers
+		return ((y%this.h)+this.h)%this.h; // allow negative numbers
 	};
 
 	// @description Adds either a bacteria, antibiotic or food
@@ -212,8 +210,8 @@
 
 		while (xycoords.length < antibioticCount + bacteriaCount) {
 			xycoords.pushUnique({
-				x: Math.floor(Math.random()*this.n),
-				y: Math.floor(Math.random()*this.m)
+				x: Math.floor(Math.random()*this.w),
+				y: Math.floor(Math.random()*this.h)
 			}, matchCoordinates);
 		}
 
@@ -249,7 +247,10 @@
 
 	Environment.prototype.updateFood = function () {
 
-		// TODO - add food generation
+		// FIXME
+		// if (generation % settings.food.regenerationRate == 0) {
+		// 	environment.add(new Food());
+		// }
 
 		var fl = this.foodList.slice(); // create copy
 		var flength = fl.length;
@@ -259,8 +260,8 @@
 	};
 
 	Environment.prototype.resolveChallenges = function () {
-		for (var i = 0; i < this.n; ++i) {
-			for (var j = 0; j < this.m; ++j) {
+		for (var i = 0; i < this.w; ++i) {
+			for (var j = 0; j < this.h; ++j) {
 				var ai = this.antibioticMatrix[i][j];
 				var bi = this.bacteriaMatrix[i][j];
 				if (ai > -1 && bi > -1) {

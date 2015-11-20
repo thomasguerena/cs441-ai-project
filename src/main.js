@@ -6,7 +6,7 @@
 	var Simulation = function () {
 		var that = this;
 		this.PAUSED = false;
-		window.environment = new Environment(16, 16);
+		window.environment = new Environment();
 
 		window.generation = 0; // current generation (global)
 
@@ -29,6 +29,12 @@
 		this.PAUSED = true;
 	};
 
+	Simulation.prototype.step = function () {
+		this.PAUSED = false;
+		this.loop(100);
+		this.PAUSED = true;
+	};
+
 	Simulation.prototype.report = function () {
 		console.log('\n\nGeneration ' + generation + '\n');
 		console.log('Bacteria count: ' + environment.bacteriaCount);
@@ -37,6 +43,7 @@
 
 	Simulation.prototype.canvasClickHandler = function (e) {
 		var pos = getCanvasMousePosition(canvas.canvas, e, true);
+
 		if (settings.simulation.spawnbrush == 'bacteria') {
 			environment.add(new Bacteria(pos.x, pos.y));
 		}
@@ -68,11 +75,13 @@
 
 		// A: Have the cells overcome the antibiotic?
 		if (this.checkSuccess() === true) {
+			antibioticDefeated();
 			console.log('\nBacteria are immune after ' + generation + ' generations.');
 		}
 
 		// B: Have the cells all died?
 		else if (this.checkFailure() === true) {
+			bacteriaDefeated();
 			console.log('\nBacteria are dead after ' + generation + ' generations.');
 		}
 
@@ -90,6 +99,7 @@
 
 		// Next generation
 		generation += 1;
+		generationTick();
 
 		environment.updateAntibiotic();
 		environment.updateBacteria();

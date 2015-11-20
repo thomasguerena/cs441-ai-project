@@ -5,12 +5,13 @@
 		// Default Simulation Settings
 		simulation: {
 			// Possible values: bacteria, antibiotic, food
-			spawnbrush: 'food'
+			spawnbrush: 'bacteria'
 		},
 
 		// Default Environment Settings
 		environment: {
-			n: 16 // height and width
+			width: 20,
+			height: 20
 		},
 
 		// Default Antibiotic Settings
@@ -39,12 +40,9 @@
 		},
 
 		food: {
-			sustenance: 80
+			sustenance: 80,
+			regenerationRate: 25
 		}
 	};
-
-	// UI handlers
-
-	// TODO
 
 })();
