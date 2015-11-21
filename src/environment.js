@@ -248,9 +248,9 @@
 	Environment.prototype.updateFood = function () {
 
 		// FIXME
-		// if (generation % settings.food.regenerationRate == 0) {
-		// 	environment.add(new Food());
-		// }
+		if (generation % settings.food.regenerationRate == 0) {
+			environment.add(new Food());
+		}
 
 		var fl = this.foodList.slice(); // create copy
 		var flength = fl.length;

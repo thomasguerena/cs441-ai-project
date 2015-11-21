@@ -19,10 +19,9 @@
 					if (environment.antibioticMatrix[rx[i]][ry[j]] < 0
 					 && environment.bacteriaMatrix[rx[i]][ry[j]] < 0
 					 && environment.foodMatrix[rx[i]][ry[j]] < 0) {
-
-						console.log('food at', rx[i], ry[j]); //rmv
-
-						return environment.add(new Food(rx[i],ry[j]));
+						this.x = rx[i];
+						this.y = ry[j];
+						return;
 					}
 				}
 			}
