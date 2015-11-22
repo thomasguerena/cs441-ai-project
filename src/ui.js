@@ -152,4 +152,11 @@
 		}
 	};
 
+	// Update the bacteria, antibiotic, and food counters.
+	window.updateCounters = function () {
+		$('.sidebar p:nth-of-type(1) span').html(environment.bacteriaCount);
+		$('.sidebar p:nth-of-type(2) span').html(environment.antibioticCount);
+		$('.sidebar p:nth-of-type(3) span').html(environment.foodCount);
+	};
+
 })();

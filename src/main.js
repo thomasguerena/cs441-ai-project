@@ -77,6 +77,7 @@
 	};
 
 	Simulation.prototype.report = function () {
+		updateCounters();
 		console.log('\n\nGeneration ' + generation + '\n');
 		console.log('Bacteria count: ' + environment.bacteriaCount);
 		console.log('Antibiotic count: ' + environment.antibioticCount);
@@ -104,6 +105,8 @@
 				this.founders.food.push(new Food(pos.x, pos.y));
 			}
 		}
+
+		updateCounters();
 		canvas.render();
 	};
 

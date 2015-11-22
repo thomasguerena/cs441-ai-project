@@ -176,6 +176,12 @@ h1, h2 {
       background: #dc322f; }
     .sidebar .spawn-brush:nth-of-type(3) > div {
       background: #6c71c4; }
+  .sidebar p {
+    margin: 12px 0; }
+    .sidebar p:nth-of-type(1) {
+      margin-top: 48px; }
+    .sidebar p span {
+      color: #ED5953; }
 
 canvas {
   border-radius: 2px;
