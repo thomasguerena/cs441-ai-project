@@ -24,6 +24,37 @@
 	initSlider('sustenance', settings.food);
 	initSlider('regenerationRate', settings.food);
 
+	// Initialize bacteria goal priorities
+	function initGoals () {
+		$('.priority-list > li:nth-child(1)').html(settings.bacteria.priorities.third);
+		$('.priority-list > li:nth-child(3)').html(settings.bacteria.priorities.second);
+		$('.priority-list > li:nth-child(5)').html(settings.bacteria.priorities.first);
+	}
+	// ...
+	initGoals();
+
+	// Set event handlers for swapping goal orders
+	$('.priority-list > .swapper').on('click', function () {
+		var temp = null;
+		if ($(this).index() == 1) {
+			temp = settings.bacteria.priorities.third;
+			settings.bacteria.priorities.third = settings.bacteria.priorities.second;
+			settings.bacteria.priorities.second = temp;
+		} else {
+			temp = settings.bacteria.priorities.second;
+			settings.bacteria.priorities.second = settings.bacteria.priorities.first;
+			settings.bacteria.priorities.first = temp;
+		}
+		initGoals();
+	});
+
+	// Set event handlers for entity spawn brushes
+	$('.spawn-brush').on('click', function () {
+		$('.spawn-brush.selected').removeClass('selected');
+		$(this).addClass('selected');
+		settings.simulation.spawnbrush = $(this).children('span').html();
+	});
+
 	// Update the generation counter and the "doomsday" bar
 	window.generationTick = function () {
 		var msgbox = document.querySelector('.message-box');
@@ -49,20 +80,5 @@
 		msg += generation > 1 ? ' generations!' : ' generation!';
 		msgbox.innerHTML = msg;
 	};
-
-	// Set event handlers for entity spawn brushes
-	var spawnbrushes = document.querySelectorAll('.spawn-brush');
-	eachEl(spawnbrushes, function (brush) {
-		brush.addEventListener('click', function (e) {
-			if (hasClass(e.target, 'selected')) return;
-			eachEl(spawnbrushes, function (b) {
-				removeClass(b, 'selected');
-			});
-			addClass(e.target, 'selected');
-			settings.simulation.spawnbrush = e.target.innerHTML;
-		});
-	});
-
-	//
 
 })();

@@ -8,9 +8,10 @@ $color-default-font: #2D2D2D;
 $color-highlighted-font: #ED5953;
 $color-light-grey: #DDDDDD;
 $color-red: #F25352;
-$color-food: #CD89D8;
-$color-bacteria: #CCDC00;
-$color-antibiotic: #F24405;
+
+$color-food: #6c71c4;
+$color-bacteria: #859900;
+$color-antibiotic: #dc322f;
 
 
 * {
@@ -30,6 +31,7 @@ body {
 	top: 0;
 	left: 50%;
 	margin-left: -480px;
+	margin-bottom: 200px;
 }
 
 h1, h2 {
@@ -50,34 +52,46 @@ h1, h2 {
 
 	.spawn-brush {
 		height: 50px;
-		width: 100%;
+		width: 160px;
 		margin: 6px 0;
-		line-height: 50px;
-		text-align: center;
 		color: $color-background;
-		cursor: pointer;
+		background: $color-default-font;
 		box-sizing: border-box;
+		border-radius: 2px;
+		cursor: pointer;
 
-		&:nth-of-type(1) { background: $color-bacteria; }
-		&:nth-of-type(2) { background: $color-antibiotic; }
-		&:nth-of-type(3) { background: $color-food; }
+		div {
+			display: inline-block;
+			height: 50px;
+			width: 50px;
+			vertical-align: top;
+			text-align: center;
+			border-top-left-radius: 2px;
+			border-bottom-left-radius: 2px;
+			box-sizing: border-box;
 
-		&.selected {
-			color: $color-default-font;
-			background: $color-background;
-			line-height: 42px;
-
-			&:nth-of-type(1) { border: 4px solid $color-bacteria; }
-			&:nth-of-type(2) { border: 4px solid $color-antibiotic; }
-			&:nth-of-type(3) { border: 4px solid $color-food; }
+			i.fa {
+				font-size: 20px;
+				line-height: 50px;
+			}
 		}
+
+		span {
+			margin-left: 12px;
+			line-height: 50px;
+		}
+
+		&:nth-of-type(1) > div { background: $color-bacteria; }
+		&:nth-of-type(2) > div { background: $color-antibiotic; }
+		&:nth-of-type(3) > div { background: $color-food; }
+
+		&.selected {}
 	}
 }
 
 canvas {
-	border: 4px solid $color-default-font;
 	border-radius: 2px;
-	box-sizing: border-box;
+	background: #002b36;
 }
 
 .progress-bar {
@@ -131,5 +145,21 @@ button {
 	}
 	.slider-container {
 		display: inline-block;
+	}
+}
+
+.priority-list {
+	margin: 24px 0 24px 24px;
+
+	li, .swapper {
+		display: inline-block;
+	}
+
+	.swapper {
+		font-size: 24px;
+		margin: 0 8px;
+		cursor: pointer;
+		vertical-align: middle;
+		color: $color-highlighted-font;
 	}
 }

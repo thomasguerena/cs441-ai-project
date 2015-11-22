@@ -9,12 +9,14 @@
 		this.ctx.font = '18px Helvetica';
 		this.tilew = Math.floor(this.canvas.width/settings.environment.width);
 		this.tileh = Math.floor(this.canvas.width/settings.environment.height);
+
 		this.colors = {
+			background: '#002b36',
 			text: '#FCFEFB',
-			food: '#CD89D8',
-			bacteria: '#CCDC00',
-			antibiotic: '#F24405',
-			challenge: '#F28705'
+			food: '#6c71c4',
+			bacteria: '#859900',
+			antibiotic: '#dc322f',
+			challenge: '#b58900'
 		};
 
 		// Indicate the current "highlighted" tile

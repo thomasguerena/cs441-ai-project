@@ -11,9 +11,17 @@
 		<h1>Bacteria Colony Cellular Automata</h1>
 		<div class="sidebar">
 			<h2>Spawn Entities</h2>
-			<div class="spawn-brush">bacteria</div>
-			<div class="spawn-brush">antibiotic</div>
-			<div class="spawn-brush">food</div>
+			<div class="spawn-brush selected">
+				<div><i class="fa fa-pencil"></i></div>
+				<span>bacteria</span>
+			</div>
+			<div class="spawn-brush">
+				<div><i class="fa fa-pencil"></i></div>
+				<span>antibiotic</span></div>
+			<div class="spawn-brush">
+				<div><i class="fa fa-pencil"></i></div>
+				<span>food</span>
+			</div>
 		</div>
 		<canvas width="600px" height="600px"></canvas><br>
 		<div class="progress-bar"><div></div><i class="fa fa-exclamation-triangle"></i></div>
@@ -25,26 +33,6 @@
 		<!-- ...a ridiculous list of adjustable parameters... -->
 
 		<h2 header>Settings</h2>
-
-		<h3>Bacteria</h3>
-		<div class="sim-parameter" id="energy">
-			<div class="slider-container">
-	  			<input type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			<p><b>Energy</b> - each bacteria will start with <span></span> energy.</p>
-		</div>
-		<div class="sim-parameter" id="mutationRate">
-			<div class="slider-container">
-	  			<input type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			<p><b>Mutation Rate</b> - bacteria have a <span></span> percent chance to mutate each generation.</p>
-		</div>
-		<div class="sim-parameter" id="mutationStep">
-			<div class="slider-container">
-	  			<input type="range" min="0" max="100" step="1" value="0"/>
-			</div>
-			<p><b>Mutation Step</b> - when bacteria mutate, they gain <span></span> genetic diversity.</p>
-		</div>
 
 		<h3>Antibiotic</h3>
 		<div class="sim-parameter" id="genx">
@@ -65,6 +53,7 @@
 			</div>
 			<p><b>Diffusal Rate</b> - reduce antibiotic potency by <span></span> when an antibiotic spreads into an adjacent cell.</p>
 		</div>
+
 		<h3>Food</h3>
 		<div class="sim-parameter" id="sustenance">
 			<div class="slider-container">
@@ -78,9 +67,38 @@
 			</div>
 			<p><b>Regeneration Rate</b> - a piece of food will enter the matrix every <span></span> generations.</p>
 		</div>
+
+		<h3>Bacteria</h3>
+		<div class="sim-parameter" id="energy">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Energy</b> - each bacteria will start with <span></span> energy.</p>
+		</div>
+		<div class="sim-parameter" id="mutationRate">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Mutation Rate</b> - bacteria have a <span></span> percent chance to mutate each generation.</p>
+		</div>
+		<div class="sim-parameter" id="mutationStep">
+			<div class="slider-container">
+	  			<input type="range" min="0" max="100" step="1" value="0"/>
+			</div>
+			<p><b>Mutation Step</b> - when bacteria mutate, they gain <span></span> genetic diversity.</p>
+		</div>
+		<p><b>Goal Prioritization</b> - the order in which a bacteria prioritizes it's goals, and the energy thresholds at which it will change goals. If a goal cannot be acted on for any reason, it will be yielded to the next highest priority goal, and so on. Goals are lists from lowest priority (left) to highest priority (right).</p>
+		<ul class="priority-list">
+			<li>Mate</li>
+			<div class="swapper"><i class="fa fa-arrows-h"></i></div>
+			<li>Eat</li>
+			<div class="swapper"><i class="fa fa-arrows-h"></i></div>
+			<li>Replicate</li>
+		</ul>
 	</div>
 
 
+	<script type="text/javascript" src="src/bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" src="src/utils.js"></script>
 	<script type="text/javascript" src="src/settings.js"></script>
 	<script type="text/javascript" src="src/ui.js"></script>

@@ -6,7 +6,7 @@
 		this.y = y;
 		this.sustenance = settings.food.sustenance;
 
-		if (!this.x || !this.y) {
+		if (this.x == undefined || this.y == undefined) {
 			var rx = new Array(environment.w);
 			var ry = new Array(environment.h);
 			for (var i = 0; i < environment.w; ++i) rx[i] = i;

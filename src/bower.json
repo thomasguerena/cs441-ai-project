@@ -1,0 +1,22 @@
+{
+  "name": "bacteria-colony-ca",
+  "homepage": "https://github.com/thomasguerena/cs441-ai-project",
+  "authors": [
+    "Thomas Guerena <guerena.t@gmail.com>"
+  ],
+  "description": "Cellular automata simulating bacteria colony growth, genetic diversity, and antibiotic resistance.\"",
+  "main": "main.js",
+  "moduleType": [],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}

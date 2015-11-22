@@ -123,7 +123,8 @@ body {
   height: auto;
   top: 0;
   left: 50%;
-  margin-left: -480px; }
+  margin-left: -480px;
+  margin-bottom: 200px; }
 
 h1, h2 {
   margin: 12px 0; }
@@ -139,34 +140,38 @@ h1, h2 {
   right: 0; }
   .sidebar .spawn-brush {
     height: 50px;
-    width: 100%;
+    width: 160px;
     margin: 6px 0;
-    line-height: 50px;
-    text-align: center;
     color: #FCFEFB;
-    cursor: pointer;
-    box-sizing: border-box; }
-    .sidebar .spawn-brush:nth-of-type(1) {
-      background: #CCDC00; }
-    .sidebar .spawn-brush:nth-of-type(2) {
-      background: #F24405; }
-    .sidebar .spawn-brush:nth-of-type(3) {
-      background: #CD89D8; }
-    .sidebar .spawn-brush.selected {
-      color: #2D2D2D;
-      background: #FCFEFB;
-      line-height: 42px; }
-      .sidebar .spawn-brush.selected:nth-of-type(1) {
-        border: 4px solid #CCDC00; }
-      .sidebar .spawn-brush.selected:nth-of-type(2) {
-        border: 4px solid #F24405; }
-      .sidebar .spawn-brush.selected:nth-of-type(3) {
-        border: 4px solid #CD89D8; }
+    background: #2D2D2D;
+    box-sizing: border-box;
+    border-radius: 2px;
+    cursor: pointer; }
+    .sidebar .spawn-brush div {
+      display: inline-block;
+      height: 50px;
+      width: 50px;
+      vertical-align: top;
+      text-align: center;
+      border-top-left-radius: 2px;
+      border-bottom-left-radius: 2px;
+      box-sizing: border-box; }
+      .sidebar .spawn-brush div i.fa {
+        font-size: 20px;
+        line-height: 50px; }
+    .sidebar .spawn-brush span {
+      margin-left: 12px;
+      line-height: 50px; }
+    .sidebar .spawn-brush:nth-of-type(1) > div {
+      background: #859900; }
+    .sidebar .spawn-brush:nth-of-type(2) > div {
+      background: #dc322f; }
+    .sidebar .spawn-brush:nth-of-type(3) > div {
+      background: #6c71c4; }
 
 canvas {
-  border: 4px solid #2D2D2D;
   border-radius: 2px;
-  box-sizing: border-box; }
+  background: #002b36; }
 
 .progress-bar {
   position: relative;
@@ -209,5 +214,16 @@ button {
     color: #ED5953; }
 .sim-parameter .slider-container {
   display: inline-block; }
+
+.priority-list {
+  margin: 24px 0 24px 24px; }
+  .priority-list li, .priority-list .swapper {
+    display: inline-block; }
+  .priority-list .swapper {
+    font-size: 24px;
+    margin: 0 8px;
+    cursor: pointer;
+    vertical-align: middle;
+    color: #ED5953; }
 
 /*# sourceMappingURL=main.css.map */
