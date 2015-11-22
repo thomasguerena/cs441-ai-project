@@ -87,19 +87,19 @@
 		var pos = getCanvasMousePosition(canvas.canvas, e, true);
 
 		if (settings.simulation.spawnbrush == 'bacteria') {
-			environment.add(new Bacteria(pos.x, pos.y));
+			environment.add(new Bacteria(pos.x, pos.y), true);
 			if (this.BEGUN === false) {
 				this.founders.bacteria.push(new Bacteria(pos.x, pos.y));
 			}
 		}
 		else if (settings.simulation.spawnbrush == 'antibiotic') {
-			environment.add(new Antibiotic(pos.x, pos.y));
+			environment.add(new Antibiotic(pos.x, pos.y), true);
 			if (this.BEGUN === false) {
 				this.founders.antibiotic.push(new Antibiotic(pos.x, pos.y));
 			}
 		}
 		else {
-			environment.add(new Food(pos.x, pos.y));
+			environment.add(new Food(pos.x, pos.y), true);
 			if (this.BEGUN === false) {
 				this.founders.food.push(new Food(pos.x, pos.y));
 			}

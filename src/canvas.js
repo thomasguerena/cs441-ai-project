@@ -20,7 +20,15 @@
 		};
 
 		// Indicate the current "highlighted" tile
-		this.on('mousemove', function (e) { that.onHover(e); });
+		this.on('mousemove', function (e) {
+			that.onHover(e);
+
+			// Mouse is "painting" (LMB down) -- hack
+			if (e.which == 1) {
+				window.sim.canvasClickHandler(e);
+			}
+		});
+
 		this.on('mouseout', function (e) { that.render(); });
 	};
 

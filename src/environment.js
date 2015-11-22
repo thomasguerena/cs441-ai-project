@@ -60,7 +60,7 @@
 
 	// @description Adds either a bacteria, antibiotic or food
 	//   into the environment, adding both to the list and matrix.
-	Environment.prototype.add = function (toAdd) {
+	Environment.prototype.add = function (toAdd, silent) {
 		var type = 'unknown';
 		var list = null;
 		var matrix = null;
@@ -92,11 +92,15 @@
 					return;
 				}
 			}
-			console.error('Cannot add ' + type + ': ' +
-				'no list vacancy @ ' + i);
+			if (!silent) {
+				console.error('Cannot add ' + type + ': ' +
+					'no list vacancy @ ' + i);
+			}
 		} else {
-			console.error('Cannot add ' + type + ': ' +
-				'no matrix vacancy @ ' + x + ',' + y);
+			if (!silent) {
+				console.error('Cannot add ' + type + ': ' +
+					'no matrix vacancy @ ' + x + ',' + y);
+			}
 		}
 	};
 
