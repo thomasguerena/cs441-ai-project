@@ -108,6 +108,14 @@ input[type=range] {
   input[type=range]:focus::-moz-range-track {
     background: #ccc; }
 
+.multi-slider-container {
+  position: relative;
+  margin: 24px 0; }
+  .multi-slider-container input[type=range] {
+    display: block;
+    width: 200px;
+    margin: 0 0 8px 24px; }
+
 /* COLORS */
 * {
   font-family: Montserrat, helvetica, san-serif; }
