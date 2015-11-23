@@ -8,6 +8,7 @@ This project is a naive simulation of bacteria colony growth and evolution. The 
 3. Open _index.html_. For best results, use Chrome for desktop. _(note: I made no attempt at cross-browser or multi-device support)_
 
 If you want to make changes to the Javascript files, refresh the browser and the project will be updated. If you want to make any changes to the project's UI via SASS files, follow these instructions.
+
 1. Install [nodejs](nodejs.org). This now includes _npm_.
 2. Install grunt.
     `npm install -g grunt`,
